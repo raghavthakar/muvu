@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="world_name" default="basic"/>
+  <arg name="debug" default="false"/>
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="false"/>
+  <arg name="verbose" default="true"/>
+
+  <!-- LOAD WORLD -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="paused" value="$(arg paused)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="verbose" value="$(arg verbose)"/>
+  </include>
+
+  <!-- LOAD MUVU ROBOT -->
+  <include file="$(find muvu_description)/launch/muvu_spawn.launch"/>
+
+  <!-- VISUALISE IN RVIZ -->
+  <node name="rviz" pkg="rviz" type="rviz"/>
+
+</launch>

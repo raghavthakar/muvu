@@ -1,0 +1,5 @@
+The dependencies of the message/service 'muvu_control/MoveDistance' have changed. Please rerun cmake.
+make[2]: *** [CMakeFiles/_muvu_control_generate_messages_check_deps_MoveDistance] Error 1
+make[1]: *** [CMakeFiles/_muvu_control_generate_messages_check_deps_MoveDistance.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [all] Error 2

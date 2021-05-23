@@ -1,0 +1,92 @@
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:[m[K In function ‘[01m[Kvoid move_distance(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&)[m[K’:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:13:29:[m[K [01;31m[Kerror: [m[K‘[01m[Kgeometry_msgs::PoseConstPtr {aka class boost::shared_ptr<const geometry_msgs::Pose_<std::allocator<void> > >}[m[K’ has no member named ‘[01m[Kposition[m[K’
+     std::cout<<current_pose.[01;31m[Kposition[m[K.x<<std::endl;
+                             [01;31m[K^~~~~~~~[m[K
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:[m[K In function ‘[01m[Kint main(int, char**)[m[K’:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:22:81:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[Kros::NodeHandle::advertiseService(const char [14], void (&)(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&))[m[K’
+   ros::ServiceServer service = n.advertiseService("move_distance", move_distance[01;31m[K)[m[K;
+                                                                                 [01;31m[K^[m[K
+In file included from [01m[K/opt/ros/melodic/include/ros/ros.h:45:0[m[K,
+                 from [01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:1[m[K:
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:879:17:[m[K [01;36m[Knote: [m[Kcandidate: template<class T, class MReq, class MRes> ros::ServiceServer ros::NodeHandle::advertiseService(const string&, bool (T::*)(MReq&, MRes&), T*)
+   ServiceServer [01;36m[KadvertiseService[m[K(const std::string& service, bool(T::*srv_func)(MReq &, MRes &), T *obj)
+                 [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:879:17:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:22:81:[m[K [01;36m[Knote: [m[K  mismatched types ‘[01m[Kbool (T::*)(MReq&, MRes&)[m[K’ and ‘[01m[Kvoid (*)(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&) {aka void (*)(muvu_control::MoveDistanceRequest_<std::allocator<void> >&, muvu_control::MoveDistanceResponse_<std::allocator<void> >&)}[m[K’
+   ros::ServiceServer service = n.advertiseService("move_distance", move_distance[01;36m[K)[m[K;
+                                                                                 [01;36m[K^[m[K
+In file included from [01m[K/opt/ros/melodic/include/ros/ros.h:45:0[m[K,
+                 from [01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:1[m[K:
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:924:17:[m[K [01;36m[Knote: [m[Kcandidate: template<class T, class MReq, class MRes> ros::ServiceServer ros::NodeHandle::advertiseService(const string&, bool (T::*)(ros::ServiceEvent<MReq, MRes>&), T*)
+   ServiceServer [01;36m[KadvertiseService[m[K(const std::string& service, bool(T::*srv_func)(ServiceEvent<MReq, MRes>&), T *obj)
+                 [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:924:17:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:22:81:[m[K [01;36m[Knote: [m[K  mismatched types ‘[01m[Kbool (T::*)(ros::ServiceEvent<MReq, MRes>&)[m[K’ and ‘[01m[Kvoid (*)(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&) {aka void (*)(muvu_control::MoveDistanceRequest_<std::allocator<void> >&, muvu_control::MoveDistanceResponse_<std::allocator<void> >&)}[m[K’
+   ros::ServiceServer service = n.advertiseService("move_distance", move_distance[01;36m[K)[m[K;
+                                                                                 [01;36m[K^[m[K
+In file included from [01m[K/opt/ros/melodic/include/ros/ros.h:45:0[m[K,
+                 from [01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:1[m[K:
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:970:17:[m[K [01;36m[Knote: [m[Kcandidate: template<class T, class MReq, class MRes> ros::ServiceServer ros::NodeHandle::advertiseService(const string&, bool (T::*)(MReq&, MRes&), const boost::shared_ptr<X>&)
+   ServiceServer [01;36m[KadvertiseService[m[K(const std::string& service, bool(T::*srv_func)(MReq &, MRes &), const boost::shared_ptr<T>& obj)
+                 [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:970:17:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:22:81:[m[K [01;36m[Knote: [m[K  mismatched types ‘[01m[Kbool (T::*)(MReq&, MRes&)[m[K’ and ‘[01m[Kvoid (*)(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&) {aka void (*)(muvu_control::MoveDistanceRequest_<std::allocator<void> >&, muvu_control::MoveDistanceResponse_<std::allocator<void> >&)}[m[K’
+   ros::ServiceServer service = n.advertiseService("move_distance", move_distance[01;36m[K)[m[K;
+                                                                                 [01;36m[K^[m[K
+In file included from [01m[K/opt/ros/melodic/include/ros/ros.h:45:0[m[K,
+                 from [01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:1[m[K:
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1017:17:[m[K [01;36m[Knote: [m[Kcandidate: template<class T, class MReq, class MRes> ros::ServiceServer ros::NodeHandle::advertiseService(const string&, bool (T::*)(ros::ServiceEvent<MReq, MRes>&), const boost::shared_ptr<X>&)
+   ServiceServer [01;36m[KadvertiseService[m[K(const std::string& service, bool(T::*srv_func)(ServiceEvent<MReq, MRes>&), const boost::shared_ptr<T>& obj)
+                 [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1017:17:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:22:81:[m[K [01;36m[Knote: [m[K  mismatched types ‘[01m[Kbool (T::*)(ros::ServiceEvent<MReq, MRes>&)[m[K’ and ‘[01m[Kvoid (*)(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&) {aka void (*)(muvu_control::MoveDistanceRequest_<std::allocator<void> >&, muvu_control::MoveDistanceResponse_<std::allocator<void> >&)}[m[K’
+   ros::ServiceServer service = n.advertiseService("move_distance", move_distance[01;36m[K)[m[K;
+                                                                                 [01;36m[K^[m[K
+In file included from [01m[K/opt/ros/melodic/include/ros/ros.h:45:0[m[K,
+                 from [01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:1[m[K:
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1061:17:[m[K [01;36m[Knote: [m[Kcandidate: template<class MReq, class MRes> ros::ServiceServer ros::NodeHandle::advertiseService(const string&, bool (*)(MReq&, MRes&))
+   ServiceServer [01;36m[KadvertiseService[m[K(const std::string& service, bool(*srv_func)(MReq&, MRes&))
+                 [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1061:17:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:22:81:[m[K [01;36m[Knote: [m[K  mismatched types ‘[01m[Kbool[m[K’ and ‘[01m[Kvoid[m[K’
+   ros::ServiceServer service = n.advertiseService("move_distance", move_distance[01;36m[K)[m[K;
+                                                                                 [01;36m[K^[m[K
+In file included from [01m[K/opt/ros/melodic/include/ros/ros.h:45:0[m[K,
+                 from [01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:1[m[K:
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1104:17:[m[K [01;36m[Knote: [m[Kcandidate: template<class MReq, class MRes> ros::ServiceServer ros::NodeHandle::advertiseService(const string&, bool (*)(ros::ServiceEvent<MReq, MRes>&))
+   ServiceServer [01;36m[KadvertiseService[m[K(const std::string& service, bool(*srv_func)(ServiceEvent<MReq, MRes>&))
+                 [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1104:17:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:22:81:[m[K [01;36m[Knote: [m[K  mismatched types ‘[01m[Kbool[m[K’ and ‘[01m[Kvoid[m[K’
+   ros::ServiceServer service = n.advertiseService("move_distance", move_distance[01;36m[K)[m[K;
+                                                                                 [01;36m[K^[m[K
+In file included from [01m[K/opt/ros/melodic/include/ros/ros.h:45:0[m[K,
+                 from [01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:1[m[K:
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1145:17:[m[K [01;36m[Knote: [m[Kcandidate: template<class MReq, class MRes> ros::ServiceServer ros::NodeHandle::advertiseService(const string&, const boost::function<bool(MReq&, MRes&)>&, const VoidConstPtr&)
+   ServiceServer [01;36m[KadvertiseService[m[K(const std::string& service, const boost::function<bool(MReq&, MRes&)>& callback,
+                 [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1145:17:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:22:81:[m[K [01;36m[Knote: [m[K  mismatched types ‘[01m[Kconst boost::function<bool(MReq&, MRes&)>[m[K’ and ‘[01m[Kvoid(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&) {aka void(muvu_control::MoveDistanceRequest_<std::allocator<void> >&, muvu_control::MoveDistanceResponse_<std::allocator<void> >&)}[m[K’
+   ros::ServiceServer service = n.advertiseService("move_distance", move_distance[01;36m[K)[m[K;
+                                                                                 [01;36m[K^[m[K
+In file included from [01m[K/opt/ros/melodic/include/ros/ros.h:45:0[m[K,
+                 from [01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:1[m[K:
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1190:17:[m[K [01;36m[Knote: [m[Kcandidate: template<class S> ros::ServiceServer ros::NodeHandle::advertiseService(const string&, const boost::function<bool(S&)>&, const VoidConstPtr&)
+   ServiceServer [01;36m[KadvertiseService[m[K(const std::string& service, const boost::function<bool(S&)>& callback,
+                 [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1190:17:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:22:81:[m[K [01;36m[Knote: [m[K  mismatched types ‘[01m[Kconst boost::function<bool(S&)>[m[K’ and ‘[01m[Kvoid(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&) {aka void(muvu_control::MoveDistanceRequest_<std::allocator<void> >&, muvu_control::MoveDistanceResponse_<std::allocator<void> >&)}[m[K’
+   ros::ServiceServer service = n.advertiseService("move_distance", move_distance[01;36m[K)[m[K;
+                                                                                 [01;36m[K^[m[K
+In file included from [01m[K/opt/ros/melodic/include/ros/ros.h:45:0[m[K,
+                 from [01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:1[m[K:
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1222:17:[m[K [01;36m[Knote: [m[Kcandidate: ros::ServiceServer ros::NodeHandle::advertiseService(ros::AdvertiseServiceOptions&)
+   ServiceServer [01;36m[KadvertiseService[m[K(AdvertiseServiceOptions& ops);
+                 [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/melodic/include/ros/node_handle.h:1222:17:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 2 provided
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:23:8:[m[K [01;31m[Kerror: [m[K‘[01m[KINFO[m[K’ is not a member of ‘[01m[Kros[m[K’
+   ros::[01;31m[KINFO[m[K("MOVING THE ROBOT");
+        [01;31m[K^~~~[m[K
+make[2]: *** [CMakeFiles/move_distance_server.dir/src/move_distance_server.cpp.o] Error 1
+make[1]: *** [CMakeFiles/move_distance_server.dir/all] Error 2
+make: *** [all] Error 2

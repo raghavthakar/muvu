@@ -1,0 +1,6 @@
+[31m[1mCMake Error[0m at /home/raghav/muvu/src/muvu_control/CMakeLists.txt:138 (add_dependencies):
+  The dependency target "muvu_control" of target "move_distance_server" does
+  not exist.
+
+
+make: *** [cmake_check_build_system] Error 1

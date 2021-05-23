@@ -1,0 +1,22 @@
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:11:19:[m[K [01;35m[Kwarning: [m[KISO C++11 requires whitespace after the macro name
+ #define move_speed[01;35m[K;[m[K
+                   [01;35m[K^[m[K
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:[m[K In constructor ‘[01m[KMover::Mover()[m[K’:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:31:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kyaw_publisher[m[K’ was not declared in this scope
+     [01;31m[Kyaw_publisher[m[K = node_handle.advertise
+     [01;31m[K^~~~~~~~~~~~~[m[K
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:31:5:[m[K [01;36m[Knote: [m[Ksuggested alternative: ‘[01m[Ktwist_publisher[m[K’
+     [01;36m[Kyaw_publisher[m[K = node_handle.advertise
+     [01;36m[K^~~~~~~~~~~~~[m[K
+     [32m[Ktwist_publisher[m[K
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:[m[K In member function ‘[01m[Kbool Mover::move(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&)[m[K’:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:64:7:[m[K [01;31m[Kerror: [m[K‘[01m[Kyaw_publisher[m[K’ was not declared in this scope
+       [01;31m[Kyaw_publisher[m[K.publish(yaw_msg);
+       [01;31m[K^~~~~~~~~~~~~[m[K
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:64:7:[m[K [01;36m[Knote: [m[Ksuggested alternative: ‘[01m[Ktwist_publisher[m[K’
+       [01;36m[Kyaw_publisher[m[K.publish(yaw_msg);
+       [01;36m[K^~~~~~~~~~~~~[m[K
+       [32m[Ktwist_publisher[m[K
+make[2]: *** [CMakeFiles/move_distance_server.dir/src/move_distance_server.cpp.o] Error 1
+make[1]: *** [CMakeFiles/move_distance_server.dir/all] Error 2
+make: *** [all] Error 2

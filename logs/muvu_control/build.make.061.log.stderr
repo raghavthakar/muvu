@@ -1,0 +1,11 @@
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:8:19:[m[K [01;35m[Kwarning: [m[KISO C++11 requires whitespace after the macro name
+ #define move_speed[01;35m[K;[m[K
+                   [01;35m[K^[m[K
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_client.cpp:[m[K In function ‘[01m[Kint main(int, char**)[m[K’:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_client.cpp:19:15:[m[K [01;31m[Kerror: [m[K‘[01m[Kmuvu_control::MoveDistance::Request {aka struct muvu_control::MoveDistanceRequest_<std::allocator<void> >}[m[K’ has no member named ‘[01m[Kdistance[m[K’
+   srv.request.[01;31m[Kdistance[m[K = 42;
+               [01;31m[K^~~~~~~~[m[K
+make[2]: *** [CMakeFiles/move_distance_client.dir/src/move_distance_client.cpp.o] Error 1
+make[1]: *** [CMakeFiles/move_distance_client.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [all] Error 2

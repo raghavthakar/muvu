@@ -1,0 +1,18 @@
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:10:19:[m[K [01;35m[Kwarning: [m[KISO C++11 requires whitespace after the macro name
+ #define move_speed[01;35m[K;[m[K
+                   [01;35m[K^[m[K
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:31:3:[m[K [01;31m[Kerror: [m[K‘[01m[Kvector[m[K’ does not name a type; did you mean ‘[01m[Kperror[m[K’?
+   [01;31m[Kvector[m[K<double> getOrientation()
+   [01;31m[K^~~~~~[m[K
+   [32m[Kperror[m[K
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:[m[K In member function ‘[01m[Kbool Mover::move(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&)[m[K’:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:52:37:[m[K [01;31m[Kerror: [m[K‘[01m[KgetOrientation[m[K’ was not declared in this scope
+     std::vector<double> orientation=[01;31m[KgetOrientation[m[K();
+                                     [01;31m[K^~~~~~~~~~~~~~[m[K
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:52:37:[m[K [01;36m[Knote: [m[Ksuggested alternative: ‘[01m[Korientation[m[K’
+     std::vector<double> orientation=[01;36m[KgetOrientation[m[K();
+                                     [01;36m[K^~~~~~~~~~~~~~[m[K
+                                     [32m[Korientation[m[K
+make[2]: *** [CMakeFiles/move_distance_server.dir/src/move_distance_server.cpp.o] Error 1
+make[1]: *** [CMakeFiles/move_distance_server.dir/all] Error 2
+make: *** [all] Error 2

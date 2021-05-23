@@ -1,0 +1,36 @@
+[  0%] Built target geometry_msgs_generate_messages_cpp
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target nav_msgs_generate_messages_py
+[  0%] Built target geometry_msgs_generate_messages_py
+[  0%] Built target nav_msgs_generate_messages_cpp
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target geometry_msgs_generate_messages_eus
+[  0%] Built target nav_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target geometry_msgs_generate_messages_nodejs
+[  0%] Built target nav_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target geometry_msgs_generate_messages_lisp
+[  0%] Built target nav_msgs_generate_messages_lisp
+[  0%] Built target _muvu_control_generate_messages_check_deps_MoveDistance
+[  0%] Built target std_msgs_generate_messages_lisp
+[ 18%] Built target muvu_control_generate_messages_eus
+[ 27%] Built target muvu_control_generate_messages_cpp
+[ 45%] Built target muvu_control_generate_messages_py
+[ 54%] Built target muvu_control_generate_messages_nodejs
+[ 63%] Built target muvu_control_generate_messages_lisp
+[ 63%] Built target muvu_control_gencpp
+[ 63%] Built target muvu_control_generate_messages
+[35m[1mScanning dependencies of target move_distance_server[0m
+[ 81%] Built target move_distance_client
+[ 90%] [32mBuilding CXX object CMakeFiles/move_distance_server.dir/src/move_distance_server.cpp.o[0m
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:[m[K In member function ‘[01m[Kbool Mover::move(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&)[m[K’:
+[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:105:7:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K;[m[K’ before ‘[01m[Ktwist_publisher[m[K’
+       [01;31m[Ktwist_publisher[m[K.publish(twist_message);
+       [01;31m[K^~~~~~~~~~~~~~~[m[K
+CMakeFiles/move_distance_server.dir/build.make:62: recipe for target 'CMakeFiles/move_distance_server.dir/src/move_distance_server.cpp.o' failed
+make[2]: *** [CMakeFiles/move_distance_server.dir/src/move_distance_server.cpp.o] Error 1
+CMakeFiles/Makefile2:876: recipe for target 'CMakeFiles/move_distance_server.dir/all' failed
+make[1]: *** [CMakeFiles/move_distance_server.dir/all] Error 2
+Makefile:140: recipe for target 'all' failed
+make: *** [all] Error 2
