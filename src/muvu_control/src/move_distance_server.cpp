@@ -47,6 +47,22 @@ class Mover
               +pow(target_x-current_odom->pose.pose.position.x, 2));
   }
 
+  double getAngleToTarget(double target_y, double current_y,
+                          double target_x, double current_x)
+  {
+    //Find the angle to rotate to face target
+    double angle_to_target = atan((target_y-current_y)/
+                                  (target_x-current_x));
+
+    if(target_x-current_x<0)
+      if(target_y-current_y>0)
+        angle_to_target+=3.14;
+      else
+        angle_to_target-=3.14;
+
+    return angle_to_target;
+  }
+
 public:
   Mover()
   {
@@ -64,26 +80,23 @@ public:
     // [roll, pitch, yaw]
     std::vector<double> orientation=getOrientation();
 
-    //Find the angle to rotate to face target
-    double angle_to_target = atan((request.target.y-current_odom->
-                                  pose.pose.position.y)/
-                                  (request.target.x-current_odom->
-                                  pose.pose.position.x));
+    double angle_to_target=getAngleToTarget(request.target.y, current_odom->
+                                  pose.pose.position.y, request.target.x,
+                                  current_odom->pose.pose.position.x);
 
     //ROtate the robot till we face the target
     while(fabs(angle_to_target-orientation[2])>0.01)
     {
+      ROS_INFO("%f %f", angle_to_target, orientation[2]);
       twist_message.angular.z=0.1;
       twist_message.linear.x=0;
       twist_publisher.publish(twist_message);
 
       orientation=getOrientation();
 
-      //Find the angle to rotate to face target
-      angle_to_target = atan((request.target.y-current_odom->
-                                    pose.pose.position.y)/
-                                    (request.target.x-current_odom->
-                                    pose.pose.position.x));
+      double angle_to_target=getAngleToTarget(request.target.y, current_odom->
+                                    pose.pose.position.y, request.target.x,
+                                    current_odom->pose.pose.position.x);
     }
 
     //Stop the robot
