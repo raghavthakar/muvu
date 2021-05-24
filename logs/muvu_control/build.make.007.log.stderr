@@ -1,7 +1,0 @@
-[01m[K/home/raghav/muvu/src/muvu_control/src/sample_neighbours_server.cpp:[m[K In member function ‘[01m[Kbool Sampler::getObstacles(int, sensor_msgs::LaserScanConstPtr)[m[K’:
-[01m[K/home/raghav/muvu/src/muvu_control/src/sample_neighbours_server.cpp:18:7:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K;[m[K’ before ‘[01m[Kreturn[m[K’
-       [01;31m[Kreturn[m[K true;
-       [01;31m[K^~~~~~[m[K
-make[2]: *** [CMakeFiles/sample_neighbours_server.dir/src/sample_neighbours_server.cpp.o] Error 1
-make[1]: *** [CMakeFiles/sample_neighbours_server.dir/all] Error 2
-make: *** [all] Error 2
