@@ -1,3 +1,0 @@
-[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:9:19:[m[K [01;35m[Kwarning: [m[KISO C++11 requires whitespace after the macro name
- #define move_speed[01;35m[K;[m[K
-                   [01;35m[K^[m[K

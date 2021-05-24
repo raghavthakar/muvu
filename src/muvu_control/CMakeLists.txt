@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
 	geometry_msgs
 	tf
 	nav_msgs
+	sensor_msgs
 )
 
 add_service_files(
@@ -28,6 +29,7 @@ generate_messages(
 	std_msgs
 	geometry_msgs
 	nav_msgs
+	sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -137,12 +139,22 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-# SERVER EXECUTABLE
+# SAMPLE NEIGHBOURS EXECUTABLE SERVER
+add_executable(sample_neighbours_server src/sample_neighbours_server.cpp)
+target_link_libraries(sample_neighbours_server ${catkin_LIBRARIES})
+add_dependencies(sample_neighbours_server muvu_control_gencpp)
+
+# SAMPLE NEIGHBOURS CLIENT EXECUTABLE
+add_executable(sample_neighbours_client src/sample_neighbours_client.cpp)
+target_link_libraries(sample_neighbours_client ${catkin_LIBRARIES})
+add_dependencies(sample_neighbours_client muvu_control_gencpp)
+
+# MOVE DISTANCE SERVER EXECUTABLE
 add_executable(move_distance_server src/move_distance_server.cpp)
 target_link_libraries(move_distance_server ${catkin_LIBRARIES})
 add_dependencies(move_distance_server muvu_control_gencpp)
 
-# CLIENT EXECUTABLE
+# MOVE DISTANCE CLIENT EXECUTABLE
 add_executable(move_distance_client src/move_distance_client.cpp)
 target_link_libraries(move_distance_client ${catkin_LIBRARIES})
 add_dependencies(move_distance_client muvu_control_gencpp)

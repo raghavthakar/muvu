@@ -1,8 +1,0 @@
-[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:[m[K In member function ‘[01m[Kbool Mover::move(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&)[m[K’:
-[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:71:32:[m[K [01;31m[Kerror: [m[K‘[01m[Kyaw[m[K’ was not declared in this scope
-     while(fabs(angle_to_target-[01;31m[Kyaw[m[K)>0.1)
-                                [01;31m[K^~~[m[K
-make[2]: *** [CMakeFiles/move_distance_server.dir/src/move_distance_server.cpp.o] Error 1
-make[1]: *** [CMakeFiles/move_distance_server.dir/all] Error 2
-make[1]: *** Waiting for unfinished jobs....
-make: *** [all] Error 2

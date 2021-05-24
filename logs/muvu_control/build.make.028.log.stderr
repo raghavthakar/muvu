@@ -1,7 +1,0 @@
-[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:[m[K In function ‘[01m[Kbool move(muvu_control::MoveDistance::Request&, muvu_control::MoveDistance::Response&)[m[K’:
-[01m[K/home/raghav/muvu/src/muvu_control/src/move_distance_server.cpp:12:24:[m[K [01;31m[Kerror: [m[Kexpected unqualified-id before ‘[01m[K=[m[K’ token
-   nav_msgs::OdometryPtr[01;31m[K=[m[Kros::topic::waitForMessage(odom_topic);
-                        [01;31m[K^[m[K
-make[2]: *** [CMakeFiles/move_distance_server.dir/src/move_distance_server.cpp.o] Error 1
-make[1]: *** [CMakeFiles/move_distance_server.dir/all] Error 2
-make: *** [all] Error 2
