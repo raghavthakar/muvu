@@ -159,6 +159,11 @@ add_executable(move_distance_client src/move_distance_client.cpp)
 target_link_libraries(move_distance_client ${catkin_LIBRARIES})
 add_dependencies(move_distance_client muvu_control_gencpp)
 
+# ONLINE STC NODE EXECUTABLE
+add_executable(online_stc src/online_stc.cpp)
+target_link_libraries(online_stc ${catkin_LIBRARIES})
+add_dependencies(online_stc muvu_control_gencpp)
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/muvu_control.cpp

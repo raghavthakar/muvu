@@ -28,6 +28,7 @@ muvu_control
 /home/raghav/muvu/devel/.private/muvu_control/lib/python2.7/dist-packages/muvu_control/srv/__init__.py /home/raghav/muvu/devel/lib/python2.7/dist-packages/muvu_control/srv/__init__.py
 /home/raghav/muvu/devel/.private/muvu_control/lib/python2.7/dist-packages/muvu_control/srv/_SampleNeighbours.py /home/raghav/muvu/devel/lib/python2.7/dist-packages/muvu_control/srv/_SampleNeighbours.py
 /home/raghav/muvu/devel/.private/muvu_control/lib/python2.7/dist-packages/muvu_control/srv/_MoveDistance.py /home/raghav/muvu/devel/lib/python2.7/dist-packages/muvu_control/srv/_MoveDistance.py
+/home/raghav/muvu/devel/.private/muvu_control/lib/muvu_control/online_stc /home/raghav/muvu/devel/lib/muvu_control/online_stc
 /home/raghav/muvu/devel/.private/muvu_control/lib/muvu_control/sample_neighbours_client /home/raghav/muvu/devel/lib/muvu_control/sample_neighbours_client
 /home/raghav/muvu/devel/.private/muvu_control/lib/muvu_control/sample_neighbours_server /home/raghav/muvu/devel/lib/muvu_control/sample_neighbours_server
 /home/raghav/muvu/devel/.private/muvu_control/lib/muvu_control/move_distance_server /home/raghav/muvu/devel/lib/muvu_control/move_distance_server
