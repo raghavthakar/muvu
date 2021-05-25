@@ -1,11 +1,17 @@
+#include <cmath>
 #include "ros/ros.h"
 #include "muvu_control/SampleNeighbours.h"
 #include "sensor_msgs/LaserScan.h"
+#include "std_msgs/Bool.h"
+#include "nav_msgs/Odometry.h"
+#include "tf/transform_datatypes.h"
+#include "tf/LinearMath/Matrix3x3.h"
 
 class Sampler
 {
   ros::NodeHandle node_handle;
   std::string laserscan_topic="/muvu/laser/scan";
+  std::string odom_topic="/muvu/odom";
   sensor_msgs::LaserScanConstPtr laser_data;
   ros::ServiceServer sample_server;
 
@@ -18,6 +24,25 @@ class Sampler
     }
 
     return false;
+  }
+
+  nav_msgs::OdometryConstPtr getOdometry()
+  {
+    return ros::topic::waitForMessage<nav_msgs::Odometry>(odom_topic);;
+  }
+
+  double getYaw(nav_msgs::OdometryConstPtr o)
+  {
+    double roll, pitch, yaw;
+
+    // the incoming geometry_msgs::Quaternion is transformed to a tf::Quaterion
+    tf::Quaternion quat;
+    tf::quaternionMsgToTF(o->pose.pose.orientation, quat);
+
+    // the tf::Quaternion has a method to acess roll pitch and yaw
+    tf::Matrix3x3(quat).getRPY(roll, pitch, yaw);
+
+    return yaw;
   }
 
 public:
@@ -35,10 +60,25 @@ public:
 
     //Calculate laser index ranges accurately
     //360 is ray pointing straight
-    response.forward_free.data=int(!getObstacles(360, laser_data));
-    response.left_free.data=int(!getObstacles(540, laser_data));
-    response.backward_free.data=int(!getObstacles(1, laser_data));
-    response.right_free.data=int(!getObstacles(180, laser_data));
+    std_msgs::Bool temp;
+
+    double yaw=getYaw(getOdometry());
+
+    //[POS_X, POS_Y, NEG_X, NEG_Y]
+    //REFERENCE ANGLE IS DIRECT ANGLE FOR +VE X FACING
+    int reference_angle=round(180*(1-(double)(yaw/3.141)));
+
+    temp.data=int(!getObstacles(reference_angle, laser_data));
+    response.neighbours.push_back(temp);
+
+    temp.data=int(!getObstacles(reference_angle+90, laser_data));
+    response.neighbours.push_back(temp);
+
+    temp.data=int(!getObstacles((reference_angle+180)%360, laser_data));
+    response.neighbours.push_back(temp);
+
+    temp.data=int(!getObstacles(reference_angle-90, laser_data));
+    response.neighbours.push_back(temp);
 
     return true;
   }

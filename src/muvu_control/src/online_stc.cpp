@@ -1,14 +1,13 @@
 #include "ros/ros.h"
 #include "muvu_control/SampleNeighbours.h"
 #include "muvu_control/MoveDistance.h"
+#include "std_msgs/Bool.h"
+#include "geometry_msgs/Point.h"
 #include "nav_msgs/Odometry.h"
 #include "tf/transform_datatypes.h"
 #include "tf/LinearMath/Matrix3x3.h"
 
-#define BACKWARD 0
-#define RIGHT 1
-#define FRONT 2
-#define LEFT 3
+enum {POS_X, POS_Y, NEG_X, NEG_Y};
 
 class Cell
 {
@@ -26,7 +25,6 @@ public:
   }
 };
 
-
 class STC
 {
   ros::NodeHandle node_handle;
@@ -41,6 +39,8 @@ class STC
 
   muvu_control::MoveDistance move_srv;
   muvu_control::SampleNeighbours sample_srv;
+
+  std::list<Cell> old_cells;
 
   nav_msgs::OdometryConstPtr getOdometry()
   {
@@ -71,6 +71,26 @@ public:
                     <muvu_control::SampleNeighbours>("sample_neighbours");
   }
 
+  void operate()
+  {
+    //Add current cell to list of visited cells
+    // old_cells.push_back(*curr_cell);
+
+    //sample neighbouring cells
+    sample_client.call(sample_srv);
+
+    //Generate a list of free neghbours from server response
+    for(int dir = 0; dir < 4; dir++)
+    {
+      if(dir == POS_X && sample_srv.response.neighbours[POS_X].data==1)
+      {
+        move_srv.request.target.x+=0.25;
+        move_client.call(move_srv);
+
+        operate();
+      }
+    }
+  }
 };
 
 int main(int argc, char** argv)
@@ -78,6 +98,10 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "online_stc");
 
   STC stc;
+
+  Cell start_cell(0.25, 0.25);
+
+  stc.operate();
 
   return 0;
 }

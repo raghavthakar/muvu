@@ -30,5 +30,22 @@ int main(int argc, char **argv)
     return 1;
   }
 
+  target_point.x=10;
+  target_point.y=0;
+
+  //Inout the request value
+  srv.request.target = target_point;
+
+  //Call the actual service. returns true if succeeded
+  if (client.call(srv))
+  {
+    ROS_INFO("Called the service, and done");
+  }
+  else
+  {
+    ROS_ERROR("Failed to call service move_distance");
+    return 1;
+  }
+
   return 0;
 }

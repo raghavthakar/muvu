@@ -54,8 +54,8 @@ class Mover
     double angle_to_target = atan((target_y-current_y)/
                                   (target_x-current_x));
 
-    if(target_x-current_x<0)
-      if(target_y-current_y>0)
+    if(target_x-current_x<=0)
+      if(target_y-current_y>=0)
         angle_to_target+=3.14;
       else
         angle_to_target-=3.14;
