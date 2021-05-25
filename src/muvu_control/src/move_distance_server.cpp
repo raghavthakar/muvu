@@ -9,7 +9,6 @@
 #include <string>
 #include <cmath>
 
-
 class Mover
 {
   ros::NodeHandle node_handle;
@@ -88,7 +87,7 @@ public:
     while(fabs(angle_to_target-orientation[2])>0.01)
     {
       ROS_INFO("%f %f", angle_to_target, orientation[2]);
-      twist_message.angular.z=0.1;
+      twist_message.angular.z=(angle_to_target-orientation[2]>0)?0.1:-0.1;
       twist_message.linear.x=0;
       twist_publisher.publish(twist_message);
 

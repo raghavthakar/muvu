@@ -4,7 +4,7 @@
 int main(int argc, char **argv)
 {
   geometry_msgs::Point target_point;
-  target_point.x=-5;
+  target_point.x=5;
   target_point.y=-5;
 
   ros::init(argc, argv, "move_distance_client");
