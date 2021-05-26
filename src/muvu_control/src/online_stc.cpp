@@ -23,23 +23,56 @@ public:
     this->x=x;
     this->y=y;
   }
+  Cell(nav_msgs::OdometryConstPtr current_odom, dir)
+  {
+    switch(dir)
+    {
+      case POS_X:
+      {
+        x=current_odom->pose.pose.point.x+0.5;
+        y=current_odom->pose.pose.point.y;
+        break;
+      }
+      case POS_Y:
+      {
+        y=current_odom->pose.pose.point.y+0.5;
+        x=current_odom->pose.pose.point.x;
+        break;
+      }
+      case NEG_X:
+      {
+        x=current_odom->pose.pose.point.x-0.5;
+        y=current_odom->pose.pose.point.y;
+        break;
+      }
+      case NEG_Y:
+      {
+        y=current_odom->pose.pose.point.y-0.5;
+        x=current_odom->pose.pose.point.x;
+        break;
+      }
+    }
+  }
 };
 
 class STC
 {
   ros::NodeHandle node_handle;
 
+  //Client objects for each service
   ros::ServiceClient move_client;
   ros::ServiceClient sample_client;
 
+  //tracks the current odometry
   nav_msgs::OdometryConstPtr current_odom;
+  //topic where odometry is published
   std::string odom_topic="/muvu/odom";
 
-  double current_yaw;
-
+  //Request/response handlers
   muvu_control::MoveDistance move_srv;
   muvu_control::SampleNeighbours sample_srv;
 
+  //global list tracks the cells that have been visited
   std::list<Cell> old_cells;
 
   nav_msgs::OdometryConstPtr getOdometry()
@@ -71,25 +104,29 @@ public:
                     <muvu_control::SampleNeighbours>("sample_neighbours");
   }
 
-  void operate()
+  void operate(Cell* prev_cell, Cell* curr_cell)
   {
     //Add current cell to list of visited cells
-    // old_cells.push_back(*curr_cell);
+    old_cells.push_back(*curr_cell);
 
     //sample neighbouring cells
     sample_client.call(sample_srv);
 
-    //Generate a list of free neghbours from server response
-    for(int dir = 0; dir < 4; dir++)
-    {
-      if(dir == POS_X && sample_srv.response.neighbours[POS_X].data==1)
-      {
-        move_srv.request.target.x+=0.25;
-        move_client.call(move_srv);
+    //Get the current odometry
+    current_odom=getOdometry();
 
-        operate();
-      }
-    }
+    //Generate a list of free neghbours from server response
+    std::list<Cell> neighbouring_free_cells;
+
+    //If the cell is free then add it to the list of free neighbouring cells
+    for(int dir=0; dir<4; dir++)
+      if(sample_srv.response.neighbours[dir].data==1)
+        //give the current odom as a paramaeter so that it can be
+        // used to set coordinates of the child cell
+        neighbouring_free_cells.push_back(Cell(current_odom, dir));
+
+    
+
   }
 };
 
@@ -99,7 +136,7 @@ int main(int argc, char** argv)
 
   STC stc;
 
-  Cell start_cell(0.25, 0.25);
+  Cell* start cell=new Cell(0.25, 0.25);
 
   stc.operate();
 
