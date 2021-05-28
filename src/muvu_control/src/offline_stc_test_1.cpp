@@ -36,11 +36,16 @@ class Cell
   int x;
   int y;
 
-  vector<Cell*> connections;
+  bool visited;
 
 public:
+  //Made public so that neighbours can be traversed through in the DFS
+  vector<Cell*> connections;
+
   Cell(int x, int y)
   {
+    visited=false;
+
     this->x=x;
     this->y=y;
   }
@@ -58,6 +63,16 @@ public:
   void addConnection(Cell* connect_cell)
   {
     connections.push_back(connect_cell);
+  }
+
+  void markVisited()
+  {
+    visited=true;
+  }
+
+  bool isVisited()
+  {
+    return visited;
   }
 
   void display()
@@ -160,6 +175,11 @@ public:
     }
   }
 
+  Cell* getBegin()
+  {
+    return (&(*all_cells.begin()));
+  }
+
   void constructGraph()
   {
     //Now initialise the connections vector for each cell
@@ -175,12 +195,13 @@ public:
           free_neighbours_iterator!=free_neighbours.end();
           free_neighbours_iterator++)
       {
-        //add conncection accepts Cell* which can be obatined the following ways:
+        //addConncection accepts Cell* which can be obatined the following ways:
         all_cells_iterator->addConnection(*free_neighbours_iterator);
       }
     }
   }
 
+  //Display every cell in the graph along with their connections
   void displayGraph()
   {
     for(list<Cell>::iterator it=all_cells.begin(); it!=all_cells.end(); it++)
@@ -191,6 +212,27 @@ public:
       cout<<endl;
     }
   }
+
+  //Depth first search takes a pointer to cell as parameter and performs DFS
+  //starting from it recursively
+  void DFS(Cell* curr_cell)
+  {
+    //Mark the current cell as visited
+    curr_cell->markVisited();
+    curr_cell->display();
+
+    //Loop through neighbouring cells and recursively visit them if unvisited
+    for(vector<Cell*>::iterator neighbour_cell=curr_cell->connections.begin();
+        neighbour_cell!=curr_cell->connections.end(); neighbour_cell++)
+    {
+      if(!(*neighbour_cell)->isVisited())
+      {
+        cout<<endl;
+        //neighbour cell is an iterator to pointer to cell. Hence use *
+        DFS(*neighbour_cell);
+      }
+    }
+  }
 };
 
 int main()
@@ -198,6 +240,6 @@ int main()
   Graph main_graph;
   main_graph.constructGraph();
   main_graph.displayGraph();
-
+  main_graph.DFS(main_graph.getBegin());
   return 0;
 }
