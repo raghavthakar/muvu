@@ -1,0 +1,3 @@
+- specifying obstacle position and map shape
+- identifying obstacles in freeneighbours()
+- maybe make a launch file to launch a python visualiser in parallel?
