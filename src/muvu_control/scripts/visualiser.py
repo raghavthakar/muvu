@@ -53,13 +53,13 @@ def showTargetBox(col, row, radius):
     pygame.draw.rect(screen, (250, 250, 0), target_rectangle)
 
 # ------------------------SHOW EDGE---------------------------------------------
-def showEdge(node_info, colour, width):
+def showEdge(node_info, prev_node_info, colour, width):
     col=int(node_info[0])
     row=int(node_info[1])
-    parent_col=int(node_info[2])
-    parent_row=int(node_info[3])
+    prev_col=int(prev_node_info[0])
+    prev_row=int(prev_node_info[1])
 
-    pygame.draw.line(screen, colour, (col, row), (parent_col, parent_row), width)
+    pygame.draw.line(screen, colour, (col, row), (prev_col, prev_row), width)
 
 # ----------------------MAIN SEQUENCE-------------------------------------------
 print("Hello World!")
@@ -91,6 +91,7 @@ running = True
 #Execute the main loop, reading one row of csv every iteration
 with open('../src/offline_stc_points.csv', 'r') as csv_file:
     reader = csv.reader(csv_file, delimiter = ',')
+    node_info=[]
 
     while running:
         for event in pygame.event.get():
@@ -98,17 +99,18 @@ with open('../src/offline_stc_points.csv', 'r') as csv_file:
                 running=False
 
         try:
+            prev_node_info=node_info
             node_info = next(reader)
             # Show a dot at node location
             showDot(node_info)
             #show an edge from node to parent node
-            # showEdge(node_info, (100, 200, 150), 2)
+            showEdge(node_info, prev_node_info, (100, 200, 150), 2)
 
         except:
-            pass;
+            pass
 
         pygame.display.flip()
-        time.sleep(0.1)
+        time.sleep(0.05)
 
 #--------------------path display--------------------------------
 # with open('../src/path.csv', 'r') as csv_file:

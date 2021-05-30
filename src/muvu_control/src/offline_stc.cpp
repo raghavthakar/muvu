@@ -6,9 +6,12 @@
 #define LENGTH 1000
 #define HEIGHT 1000
 #define CELL_UNIT 50
+#define SUB_UNIT 25
 
 //X GOES FROM LEFT TO RIGHT
 //Y GOES FROM TOP TO BOTTOM
+
+enum cell_type {top_left, top_right, bottom_left, bottom_right};
 
 using namespace std;
 
@@ -63,6 +66,21 @@ public:
   }
 };
 
+class SubCell
+{
+public:
+  double x;
+  double y;
+
+  double parent_x;
+  double parent_y;
+
+  void display()
+  {
+    cout<<x<<" "<<y<<", ";
+  }
+};
+
 class Cell
 {
   int x;
@@ -70,9 +88,13 @@ class Cell
 
   bool visited;
 
+
 public:
   //Made public so that neighbours can be traversed through in the DFS
   vector<Cell*> connections;
+
+  //top_left, top_right, bottom_left, bottom_right
+  SubCell subcells[4];
 
   Cell(int x, int y)
   {
@@ -80,6 +102,26 @@ public:
 
     this->x=x;
     this->y=y;
+
+    subcells[top_left].x=x-SUB_UNIT;
+    subcells[top_left].y=y-SUB_UNIT;
+    subcells[top_left].parent_x=x;
+    subcells[top_left].parent_y=y;
+
+    subcells[top_right].x=x+SUB_UNIT;
+    subcells[top_right].y=y-SUB_UNIT;
+    subcells[top_right].parent_x=x;
+    subcells[top_right].parent_y=y;
+
+    subcells[bottom_left].x=x-SUB_UNIT;
+    subcells[bottom_left].y=y+SUB_UNIT;
+    subcells[bottom_left].parent_x=x;
+    subcells[bottom_left].parent_y=y;
+
+    subcells[bottom_right].x=x+SUB_UNIT;
+    subcells[bottom_right].y=y+SUB_UNIT;
+    subcells[bottom_right].parent_x=x;
+    subcells[bottom_right].parent_y=y;
   }
 
   int getX()
@@ -127,6 +169,9 @@ class Graph
   list<Cell> all_cells;
   int num_cells;
 
+  //Tracks all the cells and order of adding them to Spanning tree
+  list<Cell*> spanning_tree_cells;
+
   //Returns a vector of neighbouring cells that are within the bounds of the map
   vector<Cell*> getFreeNeighbours(Cell curr_cell)
   {
@@ -140,6 +185,7 @@ class Graph
         if(all_cells_iterator->getX()==curr_cell.getX()-CELL_UNIT&&
             all_cells_iterator->getY()==curr_cell.getY())
         {
+          //pointer to location pointed to by iterator
           free_neighbours.push_back(&(*all_cells_iterator));
         }
       }
@@ -198,6 +244,7 @@ public:
     //Clear the CSV file
     ofstream csv_file;
     csv_file.open("offline_stc_points.csv");
+
 
     //Create a grid of cells that fill the entire map
     //O(n^2)
@@ -287,8 +334,13 @@ public:
     //Mark the current cell as visited
     curr_cell->markVisited();
     curr_cell->display();
+    for(int i=0; i<4; i++)
+    {
+      curr_cell->subcells[i].display();
+    }
 
-
+    //Push the current cell to all cells in the spanning tree
+    spanning_tree_cells.push_back(curr_cell);
     writeToCSV(curr_cell);
 
     //Loop through neighbouring cells and recursively visit them if unvisited
@@ -302,6 +354,113 @@ public:
         DFS(*neighbour_cell, curr_cell);
       }
     }
+
+    //For when we;re tracing the way back from dead end
+    spanning_tree_cells.push_back(curr_cell);
+    writeToCSV(curr_cell);
+  }
+
+  SubCell evaluateMove(int &curr_subcell_type, SubCell current_subcell,
+                    list<Cell*>::iterator curr_cell, list<Cell*>::iterator next_cell)
+  {
+    list<Cell*>::iterator parent_cell;
+    switch(curr_subcell_type)
+    {
+      case top_left:
+        cout<<endl<<"top left"<<endl;
+        //Compare the current subcell coordinates with the coordinates of
+        //possible cells to move to
+        //if moving left
+        if(current_subcell.x-CELL_UNIT==(*next_cell)->subcells[top_right].x)
+        {
+          curr_subcell_type=top_right;
+          parent_cell=next_cell;
+        }
+        else
+        {
+          curr_subcell_type=bottom_left;
+          parent_cell=curr_cell;
+        }
+        break;
+
+      case top_right:
+        cout<<endl<<"top right"<<endl;
+        if(current_subcell.y-CELL_UNIT==(*next_cell)->subcells[bottom_right].y)
+        {
+          curr_subcell_type=bottom_right;
+          parent_cell=next_cell;
+        }
+        else
+        {
+          curr_subcell_type=top_left;
+          parent_cell=curr_cell;
+        }
+        break;
+
+      case bottom_left:
+        cout<<endl<<"bottom_left"<<endl;
+        if(current_subcell.y+CELL_UNIT==(*next_cell)->subcells[top_left].y)
+        {
+          curr_subcell_type=top_left;
+          parent_cell=next_cell;
+        }
+        else
+        {
+          curr_subcell_type=bottom_right;
+          parent_cell=curr_cell;
+        }
+        break;
+
+      case bottom_right:
+        cout<<endl<<"bottom right"<<endl;
+        if(current_subcell.x+CELL_UNIT==(*next_cell)->subcells[bottom_left].x)
+        {
+          curr_subcell_type=bottom_left;
+          parent_cell=next_cell;
+        }
+        else
+        {
+          curr_subcell_type=top_right;
+          parent_cell=curr_cell;
+        }
+        break;
+    }
+    return (*parent_cell)->subcells[curr_subcell_type];
+  }
+
+  void moveTo(SubCell s)
+  {
+
+    cout<<endl;
+    s.display();
+  }
+
+  //Counter clockwise circumnavigation of the spanning tree
+  void circumNavigate()
+  {
+    //use spanning_tree_cells member
+    auto curr_cell=spanning_tree_cells.begin();
+    auto next_cell=curr_cell;
+    next_cell++;
+
+    //start from the top left subcell
+    int curr_subcell_type=top_left;
+    SubCell current_subcell=(*curr_cell)->subcells[curr_subcell_type];
+
+    //Returns where the robot should move
+    SubCell next_subcell=evaluateMove(curr_subcell_type, current_subcell, curr_cell, next_cell);
+
+    moveTo(next_subcell);
+
+    for(int i=0; i<10; i++)
+    {
+      curr_cell=next_cell;
+      next_cell++;
+      current_subcell=next_subcell;
+      next_subcell=evaluateMove(curr_subcell_type, current_subcell,
+                                curr_cell, next_cell);
+      moveTo(next_subcell);
+    }
   }
 };
 
@@ -310,7 +469,8 @@ int main()
   Map main_map;
   Graph main_graph;
   main_graph.constructGraph(main_map);
-  main_graph.displayGraph();
+  // main_graph.displayGraph();
   main_graph.DFS(main_graph.getBegin(), NULL);
+  main_graph.circumNavigate();
   return 0;
 }
