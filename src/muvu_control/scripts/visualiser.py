@@ -29,8 +29,8 @@ def showObstacle(obstacle_info):
 # Function to print dot on screen
 # -------------------------SHOW DOT---------------------------------------------
 def showDot(node_info):
-    col=int(node_info[0])
-    row=int(node_info[1])
+    col=float(node_info[0])
+    row=float(node_info[1])
 
     pygame.draw.circle(screen, (250, 250, 250), (col, row), 5)
 
@@ -66,32 +66,22 @@ print("Hello World!")
 running = True
 
 #-----------------------get obstacle from csv-----------------------------------
-# with open('../src/offline_stc_points.csv', 'r') as csv_file:
-#     reader = csv.reader(csv_file, delimiter = ',')
-#
-#     starting_point_info=next(reader)
-#     showSpecialDot(starting_point_info[0], starting_point_info[1]);
-#
-#     target_point_info=next(reader)
-#
-#     target_radius_info=next(reader)
-#     showTargetBox(target_point_info[0], target_point_info[1], target_radius_info[0])
-#
-#     # Target dot shown after radius so that it's over it
-#     showSpecialDot(target_point_info[0], target_point_info[1]);
-#
-#     while(True):
-#         try:
-#             obstacle_info=next(reader)
-#             showObstacle(obstacle_info)
-#         except:
-#             break
+with open('../src/map.csv', 'r') as csv_file:
+    reader = csv.reader(csv_file, delimiter = ',')
+
+    while(True):
+        try:
+            obstacle_info=next(reader)
+            showObstacle(obstacle_info)
+        except:
+            break
 
 #-----------------------csv file reading-------------------
 #Execute the main loop, reading one row of csv every iteration
 with open('../src/offline_stc_points.csv', 'r') as csv_file:
     reader = csv.reader(csv_file, delimiter = ',')
-    node_info=[]
+    node_info = next(reader)
+    prev_node_info=node_info
 
     while running:
         for event in pygame.event.get():
@@ -99,35 +89,39 @@ with open('../src/offline_stc_points.csv', 'r') as csv_file:
                 running=False
 
         try:
-            prev_node_info=node_info
-            node_info = next(reader)
             # Show a dot at node location
             showDot(node_info)
             #show an edge from node to parent node
             showEdge(node_info, prev_node_info, (100, 200, 150), 2)
+            prev_node_info=node_info
+            node_info = next(reader)
+
+        except:
+            print("except")
+            break
+
+        pygame.display.flip()
+        time.sleep(0.01)
+
+csv_file.close()
+
+#--------------------path display--------------------------------
+with open('../src/circumnavigate_points.csv', 'r') as csv_file:
+    reader = csv.reader(csv_file, delimiter = ',')
+    node_info=next(reader)
+    # prev_node_info=node_info
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running=False
+
+        try:
+            showDot(node_info)
+            node_info=next(reader)
 
         except:
             pass
 
         pygame.display.flip()
         time.sleep(0.05)
-
-#--------------------path display--------------------------------
-# with open('../src/path.csv', 'r') as csv_file:
-#     reader = csv.reader(csv_file, delimiter = ',')
-#
-#     while running:
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 running=False
-#
-#         try:
-#             node_info = next(reader)
-#             #show an edge from node to parent node
-#             showEdge(node_info, (0, 50, 0), 5)
-#
-#         except:
-#             pass
-#
-#         pygame.display.flip()
-#         time.sleep(0.1)

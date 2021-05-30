@@ -8,6 +8,17 @@
 #define CELL_UNIT 50
 #define SUB_UNIT 25
 
+// nter number of obstacles: 2
+// Enter obstacle top left column number: 75
+// Enter obstacle top left row number: 75
+// Enter obstacle bottom right column number: 201
+// Enter obstacle bottom right row number: 201
+// Enter obstacle top left column number: 255
+// Enter obstacle top left row number: 75
+// Enter obstacle bottom right column number: 801
+// Enter obstacle bottom right row number: 801
+
+
 //X GOES FROM LEFT TO RIGHT
 //Y GOES FROM TOP TO BOTTOM
 
@@ -46,6 +57,10 @@ public:
     int num_obstacles;
     int tlc, tlr, brc, brr;
 
+    //Write obstacle data to csv file
+    ofstream csv_file;
+    csv_file.open("map.csv");
+
     cout<<"Enter number of obstacles: ";
     cin>>num_obstacles;
 
@@ -59,6 +74,8 @@ public:
       cin>>brc;
       cout<<"Enter obstacle bottom right row number: ";
       cin>>brr;
+
+      csv_file<<tlc<<","<<tlr<<","<<brc<<","<<brr<<endl;
 
       //push a test Obstacle
       all_obstacles.push_back(Obstacle(tlc, tlr, brc, brr));
@@ -78,6 +95,16 @@ public:
   void display()
   {
     cout<<x<<" "<<y<<", ";
+  }
+
+  double getX()
+  {
+    return x;
+  }
+
+  double getY()
+  {
+    return y;
   }
 };
 
@@ -103,25 +130,25 @@ public:
     this->x=x;
     this->y=y;
 
-    subcells[top_left].x=x-SUB_UNIT;
-    subcells[top_left].y=y-SUB_UNIT;
-    subcells[top_left].parent_x=x;
-    subcells[top_left].parent_y=y;
+    subcells[top_left].x=(double)(x-(double)SUB_UNIT/2);
+    subcells[top_left].y=(double)(y-(double)SUB_UNIT/2);
+    subcells[top_left].parent_x=(double)(x);
+    subcells[top_left].parent_y=(double)(y);
 
-    subcells[top_right].x=x+SUB_UNIT;
-    subcells[top_right].y=y-SUB_UNIT;
-    subcells[top_right].parent_x=x;
-    subcells[top_right].parent_y=y;
+    subcells[top_right].x=(double)(x+(double)SUB_UNIT/2);
+    subcells[top_right].y=(double)(y-(double)SUB_UNIT/2);
+    subcells[top_right].parent_x=(double)(x);
+    subcells[top_right].parent_y=(double)(y);
 
-    subcells[bottom_left].x=x-SUB_UNIT;
-    subcells[bottom_left].y=y+SUB_UNIT;
-    subcells[bottom_left].parent_x=x;
-    subcells[bottom_left].parent_y=y;
+    subcells[bottom_left].x=(double)(x-(double)SUB_UNIT/2);
+    subcells[bottom_left].y=(double)(y+(double)SUB_UNIT/2);
+    subcells[bottom_left].parent_x=(double)(x);
+    subcells[bottom_left].parent_y=(double)(y);
 
-    subcells[bottom_right].x=x+SUB_UNIT;
-    subcells[bottom_right].y=y+SUB_UNIT;
-    subcells[bottom_right].parent_x=x;
-    subcells[bottom_right].parent_y=y;
+    subcells[bottom_right].x=(double)(x+(double)SUB_UNIT/2);
+    subcells[bottom_right].y=(double)(y+(double)SUB_UNIT/2);
+    subcells[bottom_right].parent_x=(double)(x);
+    subcells[bottom_right].parent_y=(double)(y);
   }
 
   int getX()
@@ -245,12 +272,15 @@ public:
     ofstream csv_file;
     csv_file.open("offline_stc_points.csv");
 
+    //Clear the CSV file
+    csv_file.open("circumnavigate_points.csv");
+
 
     //Create a grid of cells that fill the entire map
     //O(n^2)
-    for(int iy=CELL_UNIT; iy<=LENGTH; iy+=CELL_UNIT)
+    for(int iy=CELL_UNIT/2; iy<=LENGTH; iy+=CELL_UNIT)
     {
-      for(int ix=CELL_UNIT; ix<=HEIGHT; ix+=CELL_UNIT)
+      for(int ix=CELL_UNIT/2; ix<=HEIGHT; ix+=CELL_UNIT)
       {
         all_cells.push_back(Cell(ix, iy));
         num_cells++;//track the total number of cells
@@ -356,110 +386,117 @@ public:
     }
 
     //For when we;re tracing the way back from dead end
-    spanning_tree_cells.push_back(curr_cell);
-    writeToCSV(curr_cell);
+    spanning_tree_cells.push_back(prev_cell);
+    writeToCSV(prev_cell);
   }
 
-  SubCell evaluateMove(int &curr_subcell_type, SubCell current_subcell,
-                    list<Cell*>::iterator curr_cell, list<Cell*>::iterator next_cell)
+  list<Cell*>::iterator evaluateMove(auto &curr_cell, auto &next_cell, auto &curr_subcell)
   {
-    list<Cell*>::iterator parent_cell;
-    switch(curr_subcell_type)
+    switch(curr_subcell)
     {
       case top_left:
-        cout<<endl<<"top left"<<endl;
-        //Compare the current subcell coordinates with the coordinates of
-        //possible cells to move to
-        //if moving left
-        if(current_subcell.x-CELL_UNIT==(*next_cell)->subcells[top_right].x)
+      cout<<"top left";
+        //if left possible go left
+        if((*curr_cell)->subcells[top_left].getX()-SUB_UNIT==(*next_cell)->subcells[top_right].getX())
         {
-          curr_subcell_type=top_right;
-          parent_cell=next_cell;
+          next_cell++;
+          curr_cell++;
+          curr_subcell=top_right;
         }
+        //else go down in the same subcell
         else
         {
-          curr_subcell_type=bottom_left;
-          parent_cell=curr_cell;
-        }
-        break;
-
-      case top_right:
-        cout<<endl<<"top right"<<endl;
-        if(current_subcell.y-CELL_UNIT==(*next_cell)->subcells[bottom_right].y)
-        {
-          curr_subcell_type=bottom_right;
-          parent_cell=next_cell;
-        }
-        else
-        {
-          curr_subcell_type=top_left;
-          parent_cell=curr_cell;
+          curr_subcell=bottom_left;
         }
         break;
 
       case bottom_left:
-        cout<<endl<<"bottom_left"<<endl;
-        if(current_subcell.y+CELL_UNIT==(*next_cell)->subcells[top_left].y)
+      cout<<"bottom left";
+        //if down possible go left
+        if((*curr_cell)->subcells[bottom_left].getY()+SUB_UNIT==(*next_cell)->subcells[top_left].getY())
         {
-          curr_subcell_type=top_left;
-          parent_cell=next_cell;
+          next_cell++;
+          curr_cell++;
+          curr_subcell=top_left;
         }
+        //else go righ in the same subcell
         else
         {
-          curr_subcell_type=bottom_right;
-          parent_cell=curr_cell;
+          curr_subcell=bottom_right;
         }
         break;
 
       case bottom_right:
-        cout<<endl<<"bottom right"<<endl;
-        if(current_subcell.x+CELL_UNIT==(*next_cell)->subcells[bottom_left].x)
+        cout<<"bottom_right";
+        //if right possible go left
+        if((*curr_cell)->subcells[bottom_right].getX()+SUB_UNIT==(*next_cell)->subcells[bottom_left].getX())
         {
-          curr_subcell_type=bottom_left;
-          parent_cell=next_cell;
+          next_cell++;
+          curr_cell++;
+          curr_subcell=bottom_left;
         }
+        //else go up in the same subcell
         else
         {
-          curr_subcell_type=top_right;
-          parent_cell=curr_cell;
+          curr_subcell=top_right;
+        }
+        break;
+
+      case top_right:
+        cout<<"top_right";
+        //if right possible go left
+        if((*curr_cell)->subcells[top_right].getY()-SUB_UNIT==(*next_cell)->subcells[bottom_right].getY())
+        {
+          next_cell++;
+          curr_cell++;
+          curr_subcell=bottom_right;
+        }
+        //else go up in the same subcell
+        else
+        {
+          curr_subcell=top_left;
         }
         break;
     }
-    return (*parent_cell)->subcells[curr_subcell_type];
+    return next_cell;
   }
 
-  void moveTo(SubCell s)
+  void writeSubCellCSV(auto x, auto y)
   {
+    ofstream csv_file;
+    csv_file.open("circumnavigate_points.csv", ios::app);
 
-    cout<<endl;
-    s.display();
+    csv_file<<x<<","<<y<<endl;
   }
 
   //Counter clockwise circumnavigation of the spanning tree
   void circumNavigate()
   {
-    //use spanning_tree_cells member
-    auto curr_cell=spanning_tree_cells.begin();
-    auto next_cell=curr_cell;
-    next_cell++;
+    list<Cell*>::iterator curr_cell=spanning_tree_cells.begin();
+    list<Cell*>::iterator next_cell=spanning_tree_cells.begin();
+    next_cell++;//start by setting next cell one ahead
 
-    //start from the top left subcell
-    int curr_subcell_type=top_left;
-    SubCell current_subcell=(*curr_cell)->subcells[curr_subcell_type];
+    int curr_subcell=top_right;
 
-    //Returns where the robot should move
-    SubCell next_subcell=evaluateMove(curr_subcell_type, current_subcell, curr_cell, next_cell);
-
-    moveTo(next_subcell);
-
-    for(int i=0; i<10; i++)
+    for (int i = 0; i < 2000; i++)
     {
-      curr_cell=next_cell;
-      next_cell++;
-      current_subcell=next_subcell;
-      next_subcell=evaluateMove(curr_subcell_type, current_subcell,
-                                curr_cell, next_cell);
-      moveTo(next_subcell);
+      cout<<endl<<"Before evaluate, current: ";
+      (*curr_cell)->display();
+      cout<<"Next: ";
+      (*next_cell)->display();
+      cout<<"Subcell: ";
+      (*curr_cell)->subcells[curr_subcell].display();
+
+      next_cell=evaluateMove(curr_cell, next_cell, curr_subcell);
+
+      cout<<endl<<"After evaluate, current: ";
+      (*curr_cell)->display();
+      cout<<"Next: ";
+      (*next_cell)->display();
+      (*curr_cell)->subcells[curr_subcell].display();
+
+      writeSubCellCSV((*curr_cell)->subcells[curr_subcell].getX(),
+                      (*curr_cell)->subcells[curr_subcell].getY());
     }
   }
 };
@@ -470,7 +507,7 @@ int main()
   Graph main_graph;
   main_graph.constructGraph(main_map);
   // main_graph.displayGraph();
-  main_graph.DFS(main_graph.getBegin(), NULL);
+  main_graph.DFS(main_graph.getBegin(), main_graph.getBegin());
   main_graph.circumNavigate();
   return 0;
 }
