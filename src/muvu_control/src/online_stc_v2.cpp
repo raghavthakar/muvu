@@ -28,12 +28,16 @@ public:
     this->y=y;
   }
 
-  double getX()
+  //this function is const because the map data structure reqiures internal
+  //comparison using <, which needs to be defined for cell class
+  //which is defined in a const functino, which calls getX, which hence needs
+  //to be const
+  double getX() const
   {
     return x;
   }
 
-  double getY()
+  double getY() const
   {
     return y;
   }
@@ -51,6 +55,18 @@ public:
   void display()
   {
     std::cout<<"X: "<<x<<", Y: "<<y<<std::endl;
+  }
+
+  //custom operator for the map to store cell object
+  bool operator<(const Cell& cell) const
+  {
+    return cell.getX() < x;
+  }
+
+  //custom operator to remove cell from list of cells
+  bool operator==(const Cell& cell) const
+  {
+    return (cell.getX()==x && cell.getY()==y);
   }
 };
 
@@ -132,10 +148,6 @@ public:
     //Push the current cell to the list of old cells
     old_cells.push_back(curr_cell);
 
-    //add a key to the map for current cell
-    //equivalent to pushing an old cell
-    cell_free_new_neighbours_map.insert({curr_cell, free_new_neighbours});
-
     //get the free neighbours of current cell
     //posx, posy, negx, negy
     sample_client.call(sample_srv);
@@ -155,9 +167,21 @@ public:
             temp_cell.setX(curr_cell.getX()+UNIT_CELL);
             temp_cell.setY(curr_cell.getY());
 
+            //if the ngihbour is univisited, add to list of free new nghbrs
             if(!isOld(temp_cell))
+            {
               std::cout<<"Unvisited X: "<<temp_cell.getX()
               <<", Y: "<<temp_cell.getY();
+              free_new_neighbours.push_back(temp_cell);
+            }
+            //else remove the current cell from the neighbour's free new nghbrs
+            else
+            {
+              //find this neighbour in the map
+              auto it=cell_free_new_neighbours_map.find(temp_cell);
+              //remove current cell from its free new nghbrs
+              it->second.remove(curr_cell);
+            }
 
             break;
 
@@ -167,8 +191,19 @@ public:
             temp_cell.setY(curr_cell.getY()+UNIT_CELL);
 
             if(!isOld(temp_cell))
+            {
               std::cout<<"Unvisited X: "<<temp_cell.getX()
               <<", Y: "<<temp_cell.getY();
+              free_new_neighbours.push_back(temp_cell);
+            }
+            //else remove the current cell from the neighbour's free new nghbrs
+            else
+            {
+              //find this neighbour in the map
+              auto it=cell_free_new_neighbours_map.find(temp_cell);
+              //remove current cell from its free new nghbrs
+              it->second.remove(curr_cell);
+            }
 
             break;
 
@@ -178,8 +213,19 @@ public:
             temp_cell.setY(curr_cell.getY());
 
             if(!isOld(temp_cell))
+            {
               std::cout<<"Unvisited X: "<<temp_cell.getX()
               <<", Y: "<<temp_cell.getY();
+              free_new_neighbours.push_back(temp_cell);
+            }
+            //else remove the current cell from the neighbour's free new nghbrs
+            else
+            {
+              //find this neighbour in the map
+              auto it=cell_free_new_neighbours_map.find(temp_cell);
+              //remove current cell from its free new nghbrs
+              it->second.remove(curr_cell);
+            }
 
             break;
 
@@ -189,13 +235,27 @@ public:
             temp_cell.setY(curr_cell.getY()-UNIT_CELL);
 
             if(!isOld(temp_cell))
+            {
               std::cout<<"Unvisited X: "<<temp_cell.getX()
               <<", Y: "<<temp_cell.getY();
+              free_new_neighbours.push_back(temp_cell);
+            }
+            //else remove the current cell from the neighbour's free new nghbrs
+            else
+            {
+              //find this neighbour in the map
+              auto it=cell_free_new_neighbours_map.find(temp_cell);
+              //remove current cell from its free new nghbrs
+              it->second.remove(curr_cell);
+            }
 
             break;
         }
       }
     }
+    //add a key to the map for current cell
+    //equivalent to pushing an old cell along with its free new neighbours
+    cell_free_new_neighbours_map.insert({curr_cell, free_new_neighbours});
   }
 };
 
