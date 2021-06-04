@@ -133,7 +133,7 @@ public:
   }
 
   //main recursive function
-  void operate()
+  void operate(Cell parent_cell, Cell bruh_cell)
   {
     Cell curr_cell, temp_cell;
 
@@ -152,7 +152,7 @@ public:
     //posx, posy, negx, negy
     sample_client.call(sample_srv);
 
-    //loop through all the neighbours, add free and new nrighbours to list
+    //loop through all the neighbours, add free and new neighbours to list
     for(int i=0; i<4; i++)
     {
       // if neighbour is free
@@ -170,8 +170,7 @@ public:
             //if the ngihbour is univisited, add to list of free new nghbrs
             if(!isOld(temp_cell))
             {
-              std::cout<<"Unvisited X: "<<temp_cell.getX()
-              <<", Y: "<<temp_cell.getY();
+              ROS_INFO("Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
               free_new_neighbours.push_back(temp_cell);
             }
             //else remove the current cell from the neighbour's free new nghbrs
@@ -192,8 +191,7 @@ public:
 
             if(!isOld(temp_cell))
             {
-              std::cout<<"Unvisited X: "<<temp_cell.getX()
-              <<", Y: "<<temp_cell.getY();
+              ROS_INFO("Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
               free_new_neighbours.push_back(temp_cell);
             }
             //else remove the current cell from the neighbour's free new nghbrs
@@ -214,8 +212,7 @@ public:
 
             if(!isOld(temp_cell))
             {
-              std::cout<<"Unvisited X: "<<temp_cell.getX()
-              <<", Y: "<<temp_cell.getY();
+              ROS_INFO("Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
               free_new_neighbours.push_back(temp_cell);
             }
             //else remove the current cell from the neighbour's free new nghbrs
@@ -236,13 +233,13 @@ public:
 
             if(!isOld(temp_cell))
             {
-              std::cout<<"Unvisited X: "<<temp_cell.getX()
-              <<", Y: "<<temp_cell.getY();
+              ROS_INFO("Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
               free_new_neighbours.push_back(temp_cell);
             }
             //else remove the current cell from the neighbour's free new nghbrs
             else
             {
+              std::cout<<"bruh";
               //find this neighbour in the map
               auto it=cell_free_new_neighbours_map.find(temp_cell);
               //remove current cell from its free new nghbrs
@@ -256,6 +253,15 @@ public:
     //add a key to the map for current cell
     //equivalent to pushing an old cell along with its free new neighbours
     cell_free_new_neighbours_map.insert({curr_cell, free_new_neighbours});
+
+    // --------WE HAVE A CELL, LIST OF OLD CELLS, AND LIST OF FREE NIGHBOURS OF THIS CELL-------
+    //while the current cell has free new neighbours
+    //iterator to current cell in the map
+    auto curr_cell_it=cell_free_new_neighbours_map.find(curr_cell);
+    while(curr_cell_it->second.size()>0)
+    {
+      
+    }
   }
 };
 
@@ -267,7 +273,7 @@ int main(int argc, char** argv)
 
   Cell start_cell(0.25, 0.25);
 
-  stc.operate();
+  stc.operate(start_cell, start_cell);
 
   return 0;
 }
