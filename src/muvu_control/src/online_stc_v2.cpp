@@ -10,6 +10,8 @@
 #define UNIT_CELL 0.5
 #define SUBCELL_UNIT 0.25
 
+enum { POS_X, POS_Y, NEG_X, NEG_Y };
+
 class Cell
 {
   double x;
@@ -94,6 +96,46 @@ class STC
   //Map that maps every old cell to its free and new neighbouring cells
   std::map<Cell, std::list<Cell>> cell_free_new_neighbours_map;
 
+  //return the yaw for current odometry
+  double getYaw(nav_msgs::OdometryConstPtr o)
+  {
+    double roll, pitch, yaw;
+
+    // the incoming geometry_msgs::Quaternion is transformed to a tf::Quaterion
+    tf::Quaternion quat;
+    tf::quaternionMsgToTF(o->pose.pose.orientation, quat);
+
+    // the tf::Quaternion has a method to acess roll pitch and yaw
+    tf::Matrix3x3(quat).getRPY(roll, pitch, yaw);
+
+    return yaw;
+  }
+
+  //returns the direction the robot is facing
+  //POS_X, POS_Y, NEG_X, NEG_Y
+  int getDirection(double yaw)
+  {
+    if(yaw>0)
+    {
+      if(yaw<0.785)
+        return POS_X;
+      else if(yaw<2.355)
+        return POS_Y;
+      else
+        return NEG_X;
+    }
+
+    if(yaw<0)
+    {
+      if(yaw>-0.785)
+        return POS_X;
+      else if(yaw>-2.355)
+        return NEG_Y;
+      else
+        return NEG_X;
+    }
+  }
+
 public:
   STC()
   {
@@ -135,6 +177,7 @@ public:
   //main recursive function
   void operate(Cell parent_cell, Cell bruh_cell)
   {
+    ROS_INFO("OPERATING");
     Cell curr_cell, temp_cell;
 
     //placeholder variable to insert into map along with current cell
@@ -152,9 +195,19 @@ public:
     //posx, posy, negx, negy
     sample_client.call(sample_srv);
 
+    //Get the yaw of the current robot position
+    double yaw=getYaw(current_odom);
+    // Get the current direction the robot is facing, and decide counterclockwise
+    // order from that
+    int direction=getDirection(yaw);
+    int parent_direction=(direction+2)%4;
+
     //loop through all the neighbours, add free and new neighbours to list
-    for(int i=0; i<4; i++)
+    //start circular queue form parent direction
+    int i=parent_direction;
+    do
     {
+      i=i%4;
       // if neighbour is free
       if(sample_srv.response.neighbours[i].data==1)
       {
@@ -249,7 +302,9 @@ public:
             break;
         }
       }
-    }
+      i++;
+    }while(i!=(parent_direction+4)%4);//instead of going 3->4, shoudl go 3->0
+
     //add a key to the map for current cell
     //equivalent to pushing an old cell along with its free new neighbours
     cell_free_new_neighbours_map.insert({curr_cell, free_new_neighbours});
@@ -257,11 +312,11 @@ public:
     // --------WE HAVE A CELL, LIST OF OLD CELLS, AND LIST OF FREE NIGHBOURS OF THIS CELL-------
     //while the current cell has free new neighbours
     //iterator to current cell in the map
-    auto curr_cell_it=cell_free_new_neighbours_map.find(curr_cell);
-    while(curr_cell_it->second.size()>0)
-    {
-      
-    }
+    // auto curr_cell_it=cell_free_new_neighbours_map.find(curr_cell);
+    // while(curr_cell_it->second.size()>0)
+    // {
+    //
+    // }
   }
 };
 

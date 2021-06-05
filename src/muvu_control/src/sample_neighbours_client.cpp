@@ -20,10 +20,6 @@ int main(int argc, char** argv)
     ROS_INFO("%d", srv.response.neighbours[1].data);
     ROS_INFO("%d", srv.response.neighbours[2].data);
     ROS_INFO("%d", srv.response.neighbours[3].data);
-
-    // ROS_INFO("%d", srv.response.left_free.data);
-    // ROS_INFO("%d", srv.response.backward_free.data);
-    // ROS_INFO("%d", srv.response.right_free.data);
   }
   else
   {
