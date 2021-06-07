@@ -13,7 +13,7 @@
   <arg name="height" default="0.1"/>
 
   <!-- LOAD ROBOT -->
-  <param name="robot_description" command="$(find xacro)/xacro $(find muvu_description)/urdf/muvu_body.xacro"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(find muvu_description)/urdf/muvu_roomba.xacro"/>
 
   <!-- PUSHING UGV DETAILS TO PARAMAETER SERVER -->
   <param name="/muvu/length" value="$(arg length)"/>

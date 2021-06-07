@@ -1,3 +1,4 @@
+
 #include "ros/ros.h"
 #include "muvu_control/MoveDistance.h"
 #include "geometry_msgs/Pose.h"
@@ -104,7 +105,7 @@ public:
     twist_publisher.publish(twist_message);
 
     //Move the robot forwards till we reach the target
-    while(fabs(distanceFrom(request.target.x, request.target.y))>0.1)
+    while(fabs(distanceFrom(request.target.x, request.target.y))>0.01)
     {
       //Get the current odom data of the robot
       current_odom=ros::topic::waitForMessage<nav_msgs::Odometry>(odom_topic);
