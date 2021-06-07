@@ -313,10 +313,30 @@ public:
     //while the current cell has free new neighbours
     //iterator to current cell in the map
     // auto curr_cell_it=cell_free_new_neighbours_map.find(curr_cell);
-    // while(curr_cell_it->second.size()>0)
-    // {
-    //
-    // }
+    while(curr_cell_it->second.size()>0)
+    {
+      //iterator to first new naighbour in list
+      next_cell=curr_cell_it->second.begin();
+      //update the next point to the coordinatesof next cell
+      next_point.x=next_cell->getX();
+      next_point.y=next_cell->getY();
+
+      //set next point as the service target
+      move_srv.request.target=next_point;
+
+      //Call the move service. returns true if succeeded
+      if(move_client.call(move_srv))
+      {
+        ROS_INFO("Called the service, and done");
+      }
+      else
+      {
+        ROS_ERROR("Failed to call service move_distance");
+      }
+
+      //call operate with current cell and next cell
+      operate(curr_cell, *next_cell);
+    }
   }
 };
 
