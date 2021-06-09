@@ -7,6 +7,8 @@
 #include "tf/transform_datatypes.h"
 #include "tf/LinearMath/Matrix3x3.h"
 
+#define CELL_UNIT 50
+
 class Sampler
 {
   ros::NodeHandle node_handle;
@@ -68,16 +70,35 @@ public:
     //REFERENCE ANGLE IS DIRECT ANGLE FOR +VE X FACING
     int reference_angle=round(180*(1-(double)(yaw/3.141)));
 
-    temp.data=int(!getObstacles(reference_angle, laser_data));
+    // temp.data=int(!getObstacles(reference_angle, laser_data));
+    // response.neighbours.push_back(temp);
+    //
+    // temp.data=int(!getObstacles(reference_angle+90, laser_data));
+    // response.neighbours.push_back(temp);
+    //
+    // temp.data=int(!getObstacles((reference_angle+180)%360, laser_data));
+    // response.neighbours.push_back(temp);
+    //
+    // temp.data=int(!getObstacles(reference_angle-90, laser_data));
+    // response.neighbours.push_back(temp);
+
+    //Check if there is obstacle directly behind
+
+
+    //anticlockwise, starting from thr back
+    temp.data=int(!getObstacles(0, laser_data));
     response.neighbours.push_back(temp);
 
-    temp.data=int(!getObstacles(reference_angle+90, laser_data));
+    //right
+    temp.data=int(!getObstacles(90, laser_data));
     response.neighbours.push_back(temp);
 
-    temp.data=int(!getObstacles((reference_angle+180)%360, laser_data));
+    //front
+    temp.data=int(!getObstacles(180, laser_data));
     response.neighbours.push_back(temp);
 
-    temp.data=int(!getObstacles(reference_angle-90, laser_data));
+    //left
+    temp.data=int(!getObstacles(270, laser_data));
     response.neighbours.push_back(temp);
 
     return true;

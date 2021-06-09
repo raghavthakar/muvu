@@ -147,17 +147,6 @@ public:
                     <muvu_control::SampleNeighbours>("sample_neighbours");
 
     std::cout<<"Online STC";
-
-    Cell bruh = Cell(0.75, 0.25);
-
-    old_cells.push_back(Cell(0.75, 0.25));
-    std::list<Cell> temp;
-    temp.push_back(Cell(0.25, 0.25));
-    temp.push_back(Cell(0.75, -0.25));
-    temp.push_back(Cell(0.125, 0.25));
-    temp.push_back(Cell(0.75, 0.75));
-
-    cell_free_new_neighbours_map.insert({bruh, temp});
   }
 
   //Rounding the coordinates to the nearest slab
@@ -192,6 +181,19 @@ public:
   void operate(Cell parent_cell, Cell curr_cell)
   {
     ROS_INFO("OPERATING");
+
+    for(auto x = old_cells.begin(); x!=old_cells.end(); x++)
+    {
+      ROS_INFO("CELL: ");
+      x->display();
+      ROS_INFO("NEIGHBOURS: ");
+      auto y=cell_free_new_neighbours_map.find(*x);
+      for(auto z=y->second.begin(); z!=y->second.end(); z++)
+      {
+        z->display();
+      }
+    }
+
     Cell temp_cell;
 
     //placeholder variable to insert into map along with current cell
@@ -221,6 +223,7 @@ public:
     int i=parent_direction;
     do
     {
+      ROS_INFO("I is : %d", i);
       // if neighbour is free
       if(sample_srv.response.neighbours[i].data==1)
       {
@@ -229,14 +232,13 @@ public:
         switch(i)
         {
           case 0://posx
-            ROS_INFO("Free: PosX");
             temp_cell.setX(curr_cell.getX()+UNIT_CELL);
             temp_cell.setY(curr_cell.getY());
 
             //if the ngihbour is univisited, add to list of free new nghbrs
             if(!isOld(temp_cell))
             {
-              ROS_INFO("Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
+              ROS_INFO("Free: PosX Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
               free_new_neighbours.push_back(temp_cell);
             }
             //else remove the current cell from the neighbour's free new nghbrs
@@ -246,21 +248,17 @@ public:
               auto it=cell_free_new_neighbours_map.find(temp_cell);
               //remove current cell from its free new nghbrs
               it->second.remove(curr_cell);
-
-              for(auto iti=it->second.begin(); iti!=it->second.end(); iti++)
-                iti->display();
             }
 
             break;
 
           case 1://posy
-            ROS_INFO("Free: PosY");
             temp_cell.setX(curr_cell.getX());
             temp_cell.setY(curr_cell.getY()+UNIT_CELL);
 
             if(!isOld(temp_cell))
             {
-              ROS_INFO("Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
+              ROS_INFO("Free: PosY Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
               free_new_neighbours.push_back(temp_cell);
             }
             //else remove the current cell from the neighbour's free new nghbrs
@@ -275,13 +273,12 @@ public:
             break;
 
           case 2://negx
-            ROS_INFO("Free: NegX");
             temp_cell.setX(curr_cell.getX()-UNIT_CELL);
             temp_cell.setY(curr_cell.getY());
 
             if(!isOld(temp_cell))
             {
-              ROS_INFO("Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
+              ROS_INFO("Free: NegX Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
               free_new_neighbours.push_back(temp_cell);
             }
             //else remove the current cell from the neighbour's free new nghbrs
@@ -296,19 +293,17 @@ public:
             break;
 
           case 3://negy
-            ROS_INFO("Free: NegY");
             temp_cell.setX(curr_cell.getX());
             temp_cell.setY(curr_cell.getY()-UNIT_CELL);
 
             if(!isOld(temp_cell))
             {
-              ROS_INFO("Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
+              ROS_INFO("Free: NegY Unvisited X: %f, Y: %f", temp_cell.getX(), temp_cell.getY());
               free_new_neighbours.push_back(temp_cell);
             }
             //else remove the current cell from the neighbour's free new nghbrs
             else
             {
-              std::cout<<"bruh";
               //find this neighbour in the map
               auto it=cell_free_new_neighbours_map.find(temp_cell);
               //remove current cell from its free new nghbrs
@@ -329,40 +324,45 @@ public:
     // --------WE HAVE A CELL, LIST OF OLD CELLS, AND LIST OF FREE NIGHBOURS OF THIS CELL-------
     //Store coordinatesof the next cell to go to
     geometry_msgs::Point next_point;
-    //while the current cell has free new neighbours
     //iterator to current cell in the map
     auto curr_cell_it=cell_free_new_neighbours_map.find(curr_cell);
     //declare the next cell
-    std::list<Cell>::iterator next_cell;
-
-    //iterator to first new naighbour in list
-    next_cell=curr_cell_it->second.begin();
-    //update the next point to the coordinatesof next cell
-    next_point.x=next_cell->getX();
-    next_point.y=next_cell->getY();
-
-    //set next point as the service target
-    move_srv.request.target=next_point;
-
-    //Call the move service. returns true if succeeded
-    if(move_client.call(move_srv))
+    std::list<Cell>::iterator next_cell_it;
+    //While the curr cell has free new nieghbours
+    while(curr_cell_it->second.size())
     {
-      ROS_INFO("Called the service, and done");
-    }
-    else
-    {
-      ROS_ERROR("Failed to call service move_distance");
-    }
+      //iterator to first new naighbour in list
+      next_cell_it=curr_cell_it->second.begin();
+      ROS_INFO("TARGET CELL: ");
+      next_cell_it->display();
+      //update the next point to the coordinatesof next cell
+      next_point.x=next_cell_it->getX();
+      next_point.y=next_cell_it->getY();
 
-    next_cell->display();
-    current_odom=ros::topic::waitForMessage<nav_msgs::Odometry>(odom_topic);
-    ROS_INFO("X; %f", round(current_odom->pose.pose.position.x, SUBCELL_UNIT));
-    ROS_INFO("Y; %f", round(current_odom->pose.pose.position.y, SUBCELL_UNIT));
-    ROS_INFO("X; %f", current_odom->pose.pose.position.x);
-    ROS_INFO("Y; %f", current_odom->pose.pose.position.y);
-    //call operate with current cell and next cell
-    // operate(curr_cell, *next_cell);
+      //set next point as the service target
+      move_srv.request.target=next_point;
 
+      //Call the move service. returns true if succeeded
+      if(move_client.call(move_srv))
+      {
+        ROS_INFO("Called the service, and done");
+      }
+      else
+      {
+        ROS_ERROR("Failed to call service move_distance");
+      }
+
+      next_cell_it->display();
+      current_odom=ros::topic::waitForMessage<nav_msgs::Odometry>(odom_topic);
+      ROS_INFO("CURRENT CELL: ");
+      ROS_INFO("X; %f", round(current_odom->pose.pose.position.x, SUBCELL_UNIT));
+      ROS_INFO("Y; %f", round(current_odom->pose.pose.position.y, SUBCELL_UNIT));
+      ROS_INFO("X; %f", current_odom->pose.pose.position.x);
+      ROS_INFO("Y; %f", current_odom->pose.pose.position.y);
+
+      //call operate with current cell and next cell
+      operate(curr_cell, *next_cell_it);
+    }
   }
 };
 

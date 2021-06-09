@@ -1,2 +1,2 @@
 ---
-std_msgs/Bool[] neighbours
+geometry_msgs/Point[] neighbours
