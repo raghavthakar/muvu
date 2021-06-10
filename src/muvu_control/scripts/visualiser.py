@@ -29,8 +29,8 @@ def showObstacle(obstacle_info):
 # Function to print dot on screen
 # -------------------------SHOW DOT---------------------------------------------
 def showDot(node_info):
-    col=float(node_info[0])
-    row=float(node_info[1])
+    col=int(node_info[0])
+    row=int(node_info[1])
 
     pygame.draw.circle(screen, (250, 250, 250), (col, row), 5)
 
@@ -66,15 +66,15 @@ print("Hello World!")
 running = True
 
 #-----------------------get obstacle from csv-----------------------------------
-with open('../src/map.csv', 'r') as csv_file:
-    reader = csv.reader(csv_file, delimiter = ',')
-
-    while(True):
-        try:
-            obstacle_info=next(reader)
-            showObstacle(obstacle_info)
-        except:
-            break
+# with open('../src/map.csv', 'r') as csv_file:
+#     reader = csv.reader(csv_file, delimiter = ',')
+#
+#     while(True):
+#         try:
+#             obstacle_info=next(reader)
+#             showObstacle(obstacle_info)
+#         except:
+#             break
 
 #-----------------------csv file reading-------------------
 #Execute the main loop, reading one row of csv every iteration
@@ -82,6 +82,8 @@ with open('../src/offline_stc_points.csv', 'r') as csv_file:
     reader = csv.reader(csv_file, delimiter = ',')
     node_info = next(reader)
     prev_node_info=node_info
+
+    showDot(node_info)
 
     while running:
         for event in pygame.event.get():
@@ -97,7 +99,6 @@ with open('../src/offline_stc_points.csv', 'r') as csv_file:
             node_info = next(reader)
 
         except:
-            print("except")
             break
 
         pygame.display.flip()

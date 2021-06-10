@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <list>
 
 #define MAP_WIDTH 1000
@@ -156,7 +157,7 @@ class STC_handler
   //Stores the current subcell data
 
 public:
-  //constructor sets up the graph
+  //constructor sets up the graph and clears the csv file
   STC_handler(Cell start_cell)
   {
     //Add all valid cells to the list of all cells
@@ -220,6 +221,13 @@ public:
       //
       // std::cout << "------------------" << '\n';
     }
+
+    //clear the CSV files
+    std::ofstream csv_file;
+    csv_file.open("circumnavigate_points.csv");
+    csv_file.close();
+    csv_file.open("offline_stc_points.csv");
+    csv_file.close();
   }
 
   void showCells()
@@ -262,12 +270,31 @@ public:
     return spanning_tree_cells.begin();
   }
 
+  //Writes the current cell to a CSV file
+  void writeCellToCSV(Cell* curr_cell)
+  {
+    std::ofstream csv_file;
+    csv_file.open("offline_stc_points.csv", std::ios::app);
+
+    csv_file<<curr_cell->getX()<<","<<curr_cell->getY()<<std::endl;
+  }
+
+  //Writes the current subcell to a CSV file
+  void writeSubCellToCSV(SubCell* curr_subcell)
+  {
+    std::ofstream csv_file;
+    csv_file.open("circumnavigate_points.csv", std::ios::app);
+
+    csv_file<<curr_subcell->x<<","<<curr_subcell->y<<std::endl;
+  }
+
   //Traverses the graph using DFS and n iteratorupdates spanning tree cells list
   void DFS(Cell* prev_cell, Cell* curr_cell)
   {
     // curr_cell->display();
     curr_cell->markVisited();
     spanning_tree_cells.push_back(curr_cell);
+    writeCellToCSV(curr_cell);
 
     // std::cout << "-----------" << '\n';
 
@@ -276,6 +303,10 @@ public:
       if(neighbour!=NULL)
         if(!neighbour->isVisited()) DFS(curr_cell, neighbour);
     }
+
+    //Add the current cell to list again to allow backtracking in dead end cases
+    spanning_tree_cells.push_back(curr_cell);
+    writeCellToCSV(curr_cell);
   }
 
   //divide all the cells in the grpah into subcells
@@ -315,6 +346,8 @@ public:
   {
     if(spanning_tree_cell==spanning_tree_cells.end())
       return;
+
+    writeSubCellToCSV(curr_subcell);
 
     std::cout << "CURRENT CELL: " << '\n';
     curr_cell->display();
