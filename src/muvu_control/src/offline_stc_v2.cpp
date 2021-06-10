@@ -313,18 +313,105 @@ public:
   void circumnavigate(Cell* curr_cell, Cell* next_cell, SubCell* curr_subcell,
                       std::list<Cell*>::iterator spanning_tree_cell, int count)
   {
-    if(spanning_tree_cell==spanning_tree_cells.end()||count==5)
+    if(spanning_tree_cell==spanning_tree_cells.end())
       return;
 
     std::cout << "CURRENT CELL: " << '\n';
     curr_cell->display();
+    std::cout << "CURRENT SUBCELL" << '\n';
+    curr_subcell->display();
+
+    SubCell up_subcell;
+    up_subcell.x=curr_subcell->x;
+    up_subcell.y=curr_subcell->y-SUBUNIT_CELL;
+
+    SubCell right_subcell;
+    right_subcell.x=curr_subcell->x+SUBUNIT_CELL;
+    right_subcell.y=curr_subcell->y;
+
+    SubCell down_subcell;
+    down_subcell.x=curr_subcell->x;
+    down_subcell.y=curr_subcell->y+SUBUNIT_CELL;
+
+    SubCell left_subcell;
+    left_subcell.x=curr_subcell->x-SUBUNIT_CELL;
+    left_subcell.y=curr_subcell->y;
 
     //if the current subcell is the top right subcell,
     //try going up to next cell, else right to same
     if(*curr_subcell==curr_cell->child_subcellgroup->subcells[TOP_RIGHT])
-      curr_subcell->display();
+    {
+      //see if going up is valid
+      if(next_cell->child_subcellgroup->subcells[BOTTOM_RIGHT]==up_subcell)
+      {
+        std::cout << "Should go up" << '\n';
+        curr_subcell=&next_cell->child_subcellgroup->subcells[BOTTOM_RIGHT];
+        curr_cell=next_cell;
+        next_cell=*(++spanning_tree_cell);
+      }
+      else
+      {
+        std::cout << "Should go ledt" << '\n';
+        curr_subcell=&curr_cell->child_subcellgroup->subcells[TOP_LEFT];
+      }
+    }
 
-    circumnavigate(next_cell, *(++spanning_tree_cell), curr_subcell, spanning_tree_cell, count+1);
+    //if top left
+    else if(*curr_subcell==curr_cell->child_subcellgroup->subcells[TOP_LEFT])
+    {
+      //see if going up is valid
+      if(next_cell->child_subcellgroup->subcells[TOP_RIGHT]==left_subcell)
+      {
+        std::cout << "Should go left" << '\n';
+        curr_subcell=&next_cell->child_subcellgroup->subcells[TOP_RIGHT];
+        curr_cell=next_cell;
+        next_cell=*(++spanning_tree_cell);
+      }
+      else
+      {
+        std::cout << "Should go down" << '\n';
+        curr_subcell=&curr_cell->child_subcellgroup->subcells[BOTTOM_LEFT];
+      }
+    }
+
+    //if bottom left
+    else if(*curr_subcell==curr_cell->child_subcellgroup->subcells[BOTTOM_LEFT])
+    {
+      //see if going up is valid
+      if(next_cell->child_subcellgroup->subcells[TOP_LEFT]==down_subcell)
+      {
+        std::cout << "Should go down" << '\n';
+        curr_subcell=&next_cell->child_subcellgroup->subcells[TOP_LEFT];
+        curr_cell=next_cell;
+        next_cell=*(++spanning_tree_cell);
+      }
+      else
+      {
+        std::cout << "Should go right" << '\n';
+        curr_subcell=&curr_cell->child_subcellgroup->subcells[BOTTOM_RIGHT];
+      }
+    }
+
+    //if bottom right
+    else if(*curr_subcell==curr_cell->child_subcellgroup->subcells[BOTTOM_RIGHT])
+    {
+      //see if going up is valid
+      if(next_cell->child_subcellgroup->subcells[BOTTOM_LEFT]==right_subcell)
+      {
+        std::cout << "Should go right" << '\n';
+        curr_subcell=&next_cell->child_subcellgroup->subcells[BOTTOM_LEFT];
+        curr_cell=next_cell;
+        next_cell=*(++spanning_tree_cell);
+      }
+      else
+      {
+        std::cout << "Should go up" << '\n';
+        curr_subcell=&curr_cell->child_subcellgroup->subcells[TOP_RIGHT];
+      }
+    }
+
+    // circumnavigate(next_cell, *(spanning_tree_cell), curr_subcell, spanning_tree_cell, count+1);
+    circumnavigate(curr_cell, next_cell, curr_subcell, spanning_tree_cell, count+1);
   }
 };
 
@@ -339,7 +426,7 @@ int main()
 
   auto st_cell_iterator=handler.getSpanningTreeCellsBegin();
   auto curr_cell=*st_cell_iterator;
-  SubCell* curr_subcell=&curr_cell->child_subcellgroup->subcells[0];
+  SubCell* curr_subcell=&curr_cell->child_subcellgroup->subcells[TOP_RIGHT];
   st_cell_iterator++;
   auto next_cell=*st_cell_iterator;
 
