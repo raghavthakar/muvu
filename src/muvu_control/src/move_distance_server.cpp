@@ -84,6 +84,8 @@ public:
                                   pose.pose.position.y, request.target.x,
                                   current_odom->pose.pose.position.x);
 
+    ROS_INFO("TARGET X: %f Y: %f", request.target.x, request.target.y);
+
     //ROtate the robot till we face the target
     while(fabs(angle_to_target-orientation[2])>0.01)
     {

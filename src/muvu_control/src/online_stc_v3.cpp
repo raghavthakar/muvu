@@ -86,14 +86,14 @@ public:
                   <muvu_control::MoveDistance>("move_distance");
   }
 
-  void STC(Cell parent_cell, Cell curr_cell)
+  void STC(Cell parent_cell, Cell curr_cell, int num)
   {
     std::list<Cell> bruh;
+    bruh.push_back(Cell(-0.75, 0.25));
+    bruh.push_back(Cell(-0.25, -0.25));
     bruh.push_back(Cell(0.25, 0.25));
-    bruh.push_back(Cell(0.125, 0.25));
-    bruh.push_back(Cell(0.75, 0.-25));
-    bruh.push_back(Cell(0.75, 0.75));
-    cell_map.insert({Cell(0.75, 0.25), bruh});
+    bruh.push_back(Cell(-0.25, 0.75));
+    cell_map.insert({Cell(-0.25, 0.25), bruh});
 
     //local list of free neighbours of current cell
     std::list<Cell> free_neighbours;
@@ -139,14 +139,52 @@ public:
         std::cout << "-----------------" << '\n';
       }
     }
-    //Display the free neighbours of current cell
-    std::cout<<"Free neighbours of current cell: \n";
-    for(auto i=free_neighbours.begin(); i!=free_neighbours.end(); i++)
+    //insert the current cell and its free neigbbours in the cell map
+    cell_map.insert({curr_cell, free_neighbours});
+
+    //iterator to current cell in the map
+    auto curr_cell_it=cell_map.find(curr_cell);
+    //Display the free new neighbours of current cell:
+    std::cout << "Free neighbours of current cell:" << '\n';
+    for(auto i=curr_cell_it->second.begin(); i!=curr_cell_it->second.end(); i++)
     {
       i->display();
     }
-    //Add the current cell and its neighbours to visited cels map
-    cell_map.insert({curr_cell, free_neighbours});
+    std::cout << "-----------------" << '\n';
+
+    for(auto i:cell_map)
+    {
+      std::cout << "CELL:";
+      i.first.display();
+      std::cout << "neighbours:";
+      for(auto ii:i.second)
+        ii.display();
+    }
+
+    while(curr_cell_it->second.size())
+    {
+      //First new neighbour should be the next cell
+      Cell next_cell = *curr_cell_it->second.begin();
+
+      //Target location
+      move_srv.request.target.x=next_cell.getX();
+      move_srv.request.target.y=next_cell.getY();
+
+      //Call the move service. returns true if succeeded
+      if(move_client.call(move_srv))
+      {
+        ROS_INFO("Called the service, and done");
+      }
+      else
+      {
+        ROS_ERROR("Failed to call service move_distance");
+      }
+
+      if(num==3)
+        exit(0);
+      //recrusive call
+      STC(curr_cell, next_cell, num+1);
+    }
   }
 };
 
@@ -156,5 +194,5 @@ int main(int argc, char** argv)
 
   STC_handler handler;
 
-  handler.STC(Cell(0.25, 0.25), Cell(0.25, 0.25));
+  handler.STC(Cell(0.25, 0.25), Cell(0.25, 0.25), 0);
 }
