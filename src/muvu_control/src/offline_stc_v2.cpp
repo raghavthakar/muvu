@@ -305,6 +305,7 @@ public:
     }
 
     //Add the current cell to list again to allow backtracking in dead end cases
+    // curr_cell->display();
     spanning_tree_cells.push_back(curr_cell);
     writeCellToCSV(curr_cell);
   }
@@ -346,6 +347,12 @@ public:
   {
     if(spanning_tree_cell==spanning_tree_cells.end())
       return;
+
+    if(*curr_cell==*next_cell)
+    {
+      curr_cell=next_cell;
+      next_cell=*(++spanning_tree_cell);
+    }
 
     writeSubCellToCSV(curr_subcell);
 
@@ -455,7 +462,7 @@ int main()
   handler.DFS(handler.getAllCellsBegin(), handler.getAllCellsBegin());
   // handler.showSpanningTree();
   handler.divideIntoSubcells(handler.getSpanningTreeCellsBegin());
-  // handler.showSpanningTreeWithSubCellGroups();
+  handler.showSpanningTreeWithSubCellGroups();
 
   auto st_cell_iterator=handler.getSpanningTreeCellsBegin();
   auto curr_cell=*st_cell_iterator;
