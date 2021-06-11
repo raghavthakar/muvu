@@ -116,6 +116,63 @@ public:
 
 };
 
+class Map
+{
+public:
+  //This structure specifies the four corners of an Obstacle
+  struct Obstacle
+  {
+    int top_left_column;
+    int top_left_row;
+    int bottom_right_column;
+    int bottom_right_row;
+
+    Obstacle(int top_left_column, int top_left_row,
+             int bottom_right_column, int bottom_right_row)
+    {
+      this->top_left_column=top_left_column;
+      this->top_left_row = top_left_row;
+      this->bottom_right_column=bottom_right_column;
+      this->bottom_right_row = bottom_right_row;
+    }
+  };
+
+  //A list of 4 element integer arrays that specify corners of each Obstacle.
+  std::list<Obstacle> all_obstacles;
+  //An iteraot over this list tht can be used by other classes
+  std::list<Obstacle>::iterator obs_it;
+
+  Map()
+  {
+    int num_obstacles;
+    int tlc, tlr, brc, brr;
+
+    //Write obstacle data to csv file
+    std::ofstream csv_file;
+    csv_file.open("map.csv");
+
+    std::cout<<"Enter number of obstacles: ";
+    std::cin>>num_obstacles;
+
+    for(int i=0; i<num_obstacles; i++)
+    {
+      std::cout<<"Enter obstacle top left column number: ";
+      std::cin>>tlc;
+      std::cout<<"Enter obstacle top left row number: ";
+      std::cin>>tlr;
+      std::cout<<"Enter obstacle bottom right column number: ";
+      std::cin>>brc;
+      std::cout<<"Enter obstacle bottom right row number: ";
+      std::cin>>brr;
+
+      csv_file<<tlc<<","<<tlr<<","<<brc<<","<<brr<<std::endl;
+
+      //push a test Obstacle
+      all_obstacles.push_back(Obstacle(tlc, tlr, brc, brr));
+    }
+  }
+};
+
 class STC_handler
 {
   //list of all cells
@@ -154,11 +211,27 @@ class STC_handler
     return all_cells.end();
   }
 
-  //Stores the current subcell data
+  //tells if the cell is unoccupied or not
+  bool isUnoccupied(Cell curr_cell, Map main_map)
+  {
+    //checking if the proposed new node lies in an obsacle
+    //How to do it: start from top left corner to bottom right, create list of
+    //illegal rows and columns (br[0]-tl[0]->rows)
+    for(main_map.obs_it=main_map.all_obstacles.begin();
+      main_map.obs_it!=main_map.all_obstacles.end(); main_map.obs_it++)
+    {
+      if(curr_cell.getX()<=main_map.obs_it->bottom_right_column &&
+        curr_cell.getX()>=main_map.obs_it->top_left_column)
+        if(curr_cell.getY()<=main_map.obs_it->bottom_right_row &&
+          curr_cell.getY()>=main_map.obs_it->top_left_row)
+          return false;
+    }
+    return true;
+  }
 
 public:
   //constructor sets up the graph and clears the csv file
-  STC_handler(Cell start_cell)
+  STC_handler(Cell start_cell, Map STC_map)
   {
     //Add all valid cells to the list of all cells
     //top to bottom
@@ -169,7 +242,8 @@ public:
       {
         //if within map boundaries
         if(i-SUBUNIT_CELL>=0 && i+SUBUNIT_CELL<=MAP_HEIGHT
-          && ii-SUBUNIT_CELL>=0 && ii+SUBUNIT_CELL<=MAP_WIDTH)
+          && ii-SUBUNIT_CELL>=0 && ii+SUBUNIT_CELL<=MAP_WIDTH
+            && isUnoccupied(Cell(ii, i), STC_map))
         {
           //Add to list of all cells
           all_cells.push_back(Cell(ii, i));
@@ -348,18 +422,23 @@ public:
     if(spanning_tree_cell==spanning_tree_cells.end())
       return;
 
-    if(*curr_cell==*next_cell)
-    {
-      curr_cell=next_cell;
-      next_cell=*(++spanning_tree_cell);
-    }
-
     writeSubCellToCSV(curr_subcell);
 
     std::cout << "CURRENT CELL: " << '\n';
     curr_cell->display();
     std::cout << "CURRENT SUBCELL" << '\n';
     curr_subcell->display();
+    std::cout << "NEXT CELL: " << '\n';
+    next_cell->display();
+
+    //In case of dead end, attempt to go to next cell instead of looping at the end
+    //Achieved by incrememnting the iterator
+    if(curr_cell==next_cell)
+    {
+      curr_cell=next_cell;
+      next_cell=*(++spanning_tree_cell);
+      // return;
+    }
 
     SubCell up_subcell;
     up_subcell.x=curr_subcell->x;
@@ -457,7 +536,9 @@ public:
 
 int main()
 {
-  STC_handler handler(Cell(50, 50));
+  Map STC_map;
+
+  STC_handler handler(Cell(50, 50), STC_map);
   // handler.showCells();
   handler.DFS(handler.getAllCellsBegin(), handler.getAllCellsBegin());
   // handler.showSpanningTree();

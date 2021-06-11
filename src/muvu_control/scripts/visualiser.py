@@ -66,15 +66,15 @@ print("Hello World!")
 running = True
 
 #-----------------------get obstacle from csv-----------------------------------
-# with open('../src/map.csv', 'r') as csv_file:
-#     reader = csv.reader(csv_file, delimiter = ',')
-#
-#     while(True):
-#         try:
-#             obstacle_info=next(reader)
-#             showObstacle(obstacle_info)
-#         except:
-#             break
+with open('../src/map.csv', 'r') as csv_file:
+    reader = csv.reader(csv_file, delimiter = ',')
+
+    while(True):
+        try:
+            obstacle_info=next(reader)
+            showObstacle(obstacle_info)
+        except:
+            break
 
 #-----------------------csv file reading-------------------
 #Execute the main loop, reading one row of csv every iteration
